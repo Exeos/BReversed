@@ -16,7 +16,7 @@ public class Config {
 
     public Task task = Task.DETECT;
 
-    public String path;
+    private String path;
     public final String[] jars = new String[2];
 
     public void loadConfig() throws Exception {
@@ -48,6 +48,10 @@ public class Config {
                 }
             });
         }
+    }
+
+    public String getPath() {
+        return path.isEmpty() ? path : path.endsWith("\\") ? path : path.contains("\\") ? path + "\\" : path + "/";
     }
 
     public enum Task {

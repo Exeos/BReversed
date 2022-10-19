@@ -28,7 +28,7 @@ public class JarLoader {
     public final Map<String, byte[]> files = new HashMap<>();
 
     public void loadJar() {
-        final File input = new File(BReversed.INSTANCE.config.path + BReversed.INSTANCE.config.jars[0]);
+        final File input = new File(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[0]);
 
         try {
             loadFiles(input);
@@ -39,7 +39,7 @@ public class JarLoader {
     }
 
     public void exportJar() {
-        final File output = new File(BReversed.INSTANCE.config.path + BReversed.INSTANCE.config.jars[1]);
+        final File output = new File(BReversed.INSTANCE.config.getPath()  + BReversed.INSTANCE.config.jars[1]);
 
         try {
             final JarOutputStream jar = new JarOutputStream(new FileOutputStream(output));
