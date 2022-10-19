@@ -5,6 +5,7 @@ A java bytecode deobfuscator
 To use BReversed you have to add a config file.
 You must call the file "config.json", the format is following:
 
+```
 {
   "task": "DETECT or TRANSFORM",
 
@@ -16,3 +17,4 @@ You must call the file "config.json", the format is following:
     "Add transformers by entering its SimpleName here for example: ZelixFlowTransformer"
   ]
 }
+```
