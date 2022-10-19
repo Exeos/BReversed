@@ -5,7 +5,7 @@ A java bytecode deobfuscator
 > Creating the config:
 >  
 > 1. Create a file called "config.json".
-> 2. Add the following template
+> 2. Add the following template.
 > 
 Template:
 ```
