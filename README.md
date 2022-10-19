@@ -10,7 +10,7 @@ A java bytecode deobfuscator
 Template:
 ```
 {
-  "task": "DETECT or TRANSFORM",
+  "task": "DETECT",
 
   "path": "",
   "input": "in.jar",
