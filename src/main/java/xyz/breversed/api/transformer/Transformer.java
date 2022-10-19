@@ -1,8 +1,9 @@
 package xyz.breversed.api.transformer;
 
+import org.objectweb.asm.Opcodes;
 import xyz.breversed.api.interfaces.IMethods;
 
-public abstract class Transformer implements IMethods {
+public abstract class Transformer implements IMethods, Opcodes {
 
     protected abstract void transform();
 

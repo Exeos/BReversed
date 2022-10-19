@@ -10,7 +10,7 @@ public class AntiSkidNative extends AbstractDetector {
         for (ClassNode classNode : getClasses())
             if (classNode.name.startsWith("native0") && getMethod(classNode, "registerNativesForClass", "(ILjava/lang/Class;)V", "(ILjava/lang/Class<*>;)V") != null)
                 return true;
-        
+
         return false;
     }
 }
