@@ -1,6 +1,8 @@
 package xyz.breversed.api.detection;
 
-public abstract class AbstractDetector {
+import xyz.breversed.api.interfaces.IMethods;
+
+public abstract class AbstractDetector implements IMethods {
 
     protected abstract boolean detect();
 }

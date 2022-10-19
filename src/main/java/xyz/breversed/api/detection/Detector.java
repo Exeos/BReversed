@@ -2,9 +2,8 @@ package xyz.breversed.api.detection;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
-import xyz.breversed.api.interfaces.IMethods;
 
-public class Detector implements IMethods {
+public class Detector {
 
     public void detect() {
         final Reflections reflections = new Reflections("xyz.breversed.detectors", new SubTypesScanner(false));
