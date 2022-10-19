@@ -12,7 +12,7 @@ Template:
 {
   "task": "DETECT",
 
-  "path": "",
+  "path": "jars/",
   "input": "in.jar",
   "output": "out.jar",
 
