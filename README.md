@@ -1,10 +1,13 @@
 # BReversed
 A java bytecode deobfuscator
 
-[INFO]
-To use BReversed you have to add a config file.
-You must call the file "config.json", the format is following:
-
+**Config**
+> Creating the config:
+>  
+> 1. Create a file called "config.json".
+> 2. Add the following template
+> 
+Template:
 ```
 {
   "task": "DETECT or TRANSFORM",
