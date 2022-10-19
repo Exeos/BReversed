@@ -10,14 +10,26 @@ A java bytecode deobfuscator
 Template:
 ```
 {
-  "task": "DETECT or TRANSFORM",
+  "task": "DETECT",
 
-  "path": "optional, use if if jars are in a designated folder",
-  "input": "JARNAME (.jar is optional)",
-  "output": "JARNAME (.jar is optional)",
+  "path": "jars",
+  "input": "in.jar",
+  "output": "out.jar",
 
   "transformers": [
-    "Add transformers by entering its SimpleName here for example: ZelixFlowTransformer"
+    "BozarFlowTransformer"
   ]
 }
+```
+Explanation:
+```
+  "task":
+    - "DETECT", use to detect obfuscators
+    - "TRANSFORM", use to deobfuscate
+    
+  "path": use if jars are in a different path
+  "input": input jar name, ".jar" is optional
+  "output": output jar name, ".jar" is optional
+  
+  "transformers": list of transformers simpleName, for deobfuscation
 ```
