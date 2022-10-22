@@ -10,7 +10,7 @@ public enum BReversed {
 
     INSTANCE;
 
-    private final String[] authors = new String[] { "Exeos" };
+    private final String[] authors = new String[] { "Exeos", "$kush" };
     private final String version = "v1.0.0";
 
     public final Config config = new Config();
