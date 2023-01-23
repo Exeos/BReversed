@@ -6,11 +6,16 @@ import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.api.JarLoader;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface IMethods {
 
     default ArrayList<ClassNode> getClasses() {
         return JarLoader.classes;
+    }
+
+    default Map<String, byte[]> getFiles() {
+        return JarLoader.files;
     }
 
     default MethodNode getMethod(ClassNode classNode, String name, String desc) {

@@ -11,7 +11,7 @@ public class Detector {
             try {
                 final AbstractDetector detector = detectorClass.newInstance();
                 if (detector.detect())
-                    System.out.println("Detected " + detector.getClass().getSimpleName());
+                    System.out.println("Detected " + detector.toString());
             } catch (InstantiationException | IllegalAccessException e) {
                System.out.println("Error adding Detectors:");
                e.printStackTrace();

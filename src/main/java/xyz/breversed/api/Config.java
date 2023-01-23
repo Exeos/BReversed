@@ -19,6 +19,8 @@ public class Config {
     private String path;
     public final String[] jars = new String[2];
 
+    public String renamerStr;
+
     public void loadConfig() throws Exception {
         final FileReader configFile = new FileReader("config.json");
         final JsonObject configObject = JsonParser.parseReader(configFile).getAsJsonObject();
@@ -31,6 +33,9 @@ public class Config {
             jars[0] = configObject.get("input").getAsString() + (configObject.get("input").getAsString().endsWith(".jar") ? "" : ".jar");
             jars[1] = configObject.get("output").getAsString() + (configObject.get("output").getAsString().endsWith(".jar") ? "" : ".jar");
         }
+
+        // renamer string
+        renamerStr = configObject.get("renamerString").getAsString();
 
         // Adding transformers from Config
         {

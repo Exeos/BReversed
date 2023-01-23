@@ -6,4 +6,9 @@ import xyz.breversed.api.interfaces.IMethods;
 public abstract class AbstractDetector implements IMethods, Opcodes {
 
     protected abstract boolean detect();
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

@@ -5,6 +5,7 @@ import xyz.breversed.api.JarLoader;
 import xyz.breversed.api.detection.Detector;
 import xyz.breversed.api.transformer.TransformerManager;
 import xyz.breversed.api.utils.ConsoleUtils;
+import xyz.breversed.api.utils.RenameUtil;
 
 public enum BReversed {
 
