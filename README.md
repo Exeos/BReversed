@@ -15,6 +15,8 @@ Template:
   "path": "jars",
   "input": "in.jar",
   "output": "out.jar",
+  
+  "renamerString": "BReversed",
 
   "transformers": [
     "BozarFlowTransformer"
@@ -30,6 +32,8 @@ Explanation:
   "path": use if jars are in a different path
   "input": input jar name, ".jar" is optional
   "output": output jar name, ".jar" is optional
+  
+   "renamerString": The new name renamed objects (+ the index)
   
   "transformers": list of transformers simpleName, for deobfuscation
 ```
