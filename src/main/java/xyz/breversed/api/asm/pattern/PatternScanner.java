@@ -43,7 +43,7 @@ public class PatternScanner implements JarInterface {
                 results.add(result);
         }
 
-        return results.isEmpty() ? null : results;
+        return results;
     }
 
     /**
