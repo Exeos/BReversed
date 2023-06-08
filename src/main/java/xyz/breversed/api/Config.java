@@ -47,7 +47,6 @@ public class Config {
             reflections.getSubTypesOf(Transformer.class).stream().filter(aClass -> actives.contains(aClass.getSimpleName())).forEach(aClass -> {
                 try {
                     BReversed.INSTANCE.transformerManager.transformers.add(aClass.newInstance());
-                    System.out.println("DELETE THIS: " + aClass.getSimpleName());
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
