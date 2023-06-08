@@ -1,9 +1,11 @@
 package xyz.breversed.transformers;
 
-import org.objectweb.asm.tree.AbstractInsnNode;
 import xyz.breversed.api.asm.pattern.PatternParts;
 import xyz.breversed.api.asm.pattern.PatternScanner;
+import xyz.breversed.api.asm.pattern.result.ClassResult;
 import xyz.breversed.api.asm.transformer.Transformer;
+
+import java.util.List;
 
 public class TestTransformer extends Transformer implements PatternParts {
 
@@ -20,19 +22,13 @@ public class TestTransformer extends Transformer implements PatternParts {
         };
         PatternScanner patternScanner = new PatternScanner(pattern);
 
-        getClasses().forEach(classNode -> {
-            classNode.methods.forEach(methodNode -> {
-
-                AbstractInsnNode patternStart = patternScanner.scanMethod(methodNode);
-
-                if (patternStart != null) {
-                    System.out.println("Pattern Found!");
-                    System.out.println("Class: " + classNode.name);
-                    System.out.println("Method: " + methodNode.name);
-                    System.out.println("Start index: " + methodNode.instructions.indexOf(patternStart));
-                }
-
-            });
-        });
+        List<ClassResult> results = patternScanner.scanArchive(getClasses());
+        int index = 1;
+        for (ClassResult result : results) {
+            System.out.println("________" + index + "________");
+            
+            System.out.println("_________________");
+            index++;
+        }
     }
 }
