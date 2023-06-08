@@ -1,8 +1,8 @@
 package xyz.breversed.transformers.crasher;
 
 import org.objectweb.asm.tree.ClassNode;
-import xyz.breversed.api.transformer.Transformer;
-import xyz.breversed.api.utils.RenameUtil;
+import xyz.breversed.api.asm.transformer.Transformer;
+import xyz.breversed.api.asm.utils.RenameUtil;
 
 public class IMGCrasherRemover extends Transformer {
 

@@ -1,7 +1,7 @@
 package xyz.breversed.detectors.crasher;
 
 import org.objectweb.asm.tree.ClassNode;
-import xyz.breversed.api.detection.AbstractDetector;
+import xyz.breversed.api.asm.detection.AbstractDetector;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

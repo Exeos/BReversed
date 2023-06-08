@@ -1,11 +1,10 @@
 package xyz.breversed;
 
 import xyz.breversed.api.Config;
-import xyz.breversed.api.JarLoader;
-import xyz.breversed.api.detection.Detector;
-import xyz.breversed.api.transformer.TransformerManager;
-import xyz.breversed.api.utils.ConsoleUtils;
-import xyz.breversed.api.utils.RenameUtil;
+import xyz.breversed.api.asm.JarLoader;
+import xyz.breversed.api.asm.detection.Detector;
+import xyz.breversed.api.asm.transformer.TransformerManager;
+import xyz.breversed.api.utils.ConsoleUtil;
 
 public enum BReversed {
 
@@ -34,35 +33,35 @@ public enum BReversed {
 
         {
             System.out.println("______________________________________________________________");
-            ConsoleUtils.start("Loading Config");
+            ConsoleUtil.start("Loading Config");
             try {
                 config.loadConfig();
-                ConsoleUtils.finish();
+                ConsoleUtil.finish();
             } catch (Exception e) {
                 System.out.println("Error loading config:");
                 e.printStackTrace();
                 return;
             }
 
-            ConsoleUtils.start("Loading jar");
+            ConsoleUtil.start("Loading jar");
             JarLoader.loadJar();
-            ConsoleUtils.finish();
+            ConsoleUtil.finish();
 
             switch (config.task) {
                 case DETECT -> {
-                    ConsoleUtils.start("Detecting obfuscation");
+                    ConsoleUtil.start("Detecting obfuscation");
                     detector.detect();
                 }
                 case TRANSFORM -> {
-                    ConsoleUtils.start("Deobfuscation");
+                    ConsoleUtil.start("Deobfuscation");
                     transformerManager.transform();
-                    ConsoleUtils.finish();
+                    ConsoleUtil.finish();
 
-                    ConsoleUtils.start("Exporting jar");
+                    ConsoleUtil.start("Exporting jar");
                     JarLoader.exportJar();
                 }
             }
-            ConsoleUtils.finishNoLine();
+            ConsoleUtil.finishNoLine();
             System.out.println("______________________________________________________________");
         }
 

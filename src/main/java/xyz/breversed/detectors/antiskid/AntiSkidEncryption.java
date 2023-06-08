@@ -1,7 +1,7 @@
 package xyz.breversed.detectors.antiskid;
 
 import org.objectweb.asm.tree.ClassNode;
-import xyz.breversed.api.detection.AbstractDetector;
+import xyz.breversed.api.asm.detection.AbstractDetector;
 
 public class AntiSkidEncryption extends AbstractDetector {
 

@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import xyz.breversed.BReversed;
-import xyz.breversed.api.transformer.Transformer;
+import xyz.breversed.api.asm.transformer.Transformer;
 
 import java.io.FileReader;
 import java.util.ArrayList;

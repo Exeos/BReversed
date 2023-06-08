@@ -1,25 +1,70 @@
 package xyz.breversed.detectors.bozar;
 
-import xyz.breversed.api.detection.AbstractDetector;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
+import xyz.breversed.api.asm.detection.AbstractDetector;
+import xyz.breversed.api.asm.pattern.PatternParts;
+import xyz.breversed.api.asm.pattern.PatternScanner;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class BozarFlow extends AbstractDetector {
+public class BozarFlow extends AbstractDetector implements PatternParts {
 
     @Override
     protected boolean detect() {
-        final AtomicBoolean detected = new AtomicBoolean(false);
-        getClasses().forEach(classNode -> classNode.methods.forEach(methodNode -> methodNode.instructions.forEach(abstractInsnNode -> {
-            if (abstractInsnNode.getOpcode() == LDC && getNext(abstractInsnNode, 1).getOpcode() == I2L &&
-                    getNext(abstractInsnNode, 2).getOpcode() == LDC &&
-                    getNext(abstractInsnNode, 3).getOpcode() == LXOR && getNext(abstractInsnNode, 4).getOpcode() == LDC &&
-                    getNext(abstractInsnNode, 5).getOpcode() == I2L && getNext(abstractInsnNode, 6).getOpcode() == LDC &&
-                    getNext(abstractInsnNode, 7).getOpcode() == LXOR && getNext(abstractInsnNode, 8).getOpcode() == LXOR &&
-                    getNext(abstractInsnNode, 9).getOpcode() == LDIV && getNext(abstractInsnNode, 10).getOpcode() == GOTO) {
-                detected.set(true);
+        AtomicBoolean detected = new AtomicBoolean(false);
+        PatternScanner patternScanner = new PatternScanner();
+
+        for (ClassNode classNode : getClasses()) {
+            for (FieldNode field : classNode.fields) {
+                if (field.desc.equals("J")) {
+                    addContext("Found flow field");
+                    break;
+                }
             }
-        })));
+
+            for (MethodNode methodNode : classNode.methods) {
+                detected.set(lightFlow0(patternScanner, methodNode) || lightFlow1(patternScanner, methodNode));
+
+                if (detected.get()) {
+                    addContext("Detected Light flow pattern");
+                    break;
+                }
+            }
+        }
 
         return detected.get();
+    }
+
+    private boolean lightFlow0(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
+                GOTO,
+                P_LABEL,
+                POP,
+                P_LABEL,
+                GETSTATIC,
+                P_ANY,
+                LCMP,
+                DUP,
+                IFEQ,
+                P_ANY,
+                IF_ICMPNE
+        });
+        return patternScanner.scanMethod(methodNode) != null;
+    }
+
+    private boolean lightFlow1(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
+                GETSTATIC,
+                GOTO,
+                P_LABEL,
+                P_ANY,
+                LDIV,
+                P_LABEL,
+                L2I,
+                LOOKUPSWITCH
+        });
+        return patternScanner.scanMethod(methodNode) != null;
     }
 }

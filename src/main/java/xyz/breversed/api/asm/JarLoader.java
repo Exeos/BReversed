@@ -1,4 +1,4 @@
-package xyz.breversed.api;
+package xyz.breversed.api.asm;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
@@ -83,7 +83,7 @@ public class JarLoader {
             try {
                 final ClassReader classReader = new ClassReader(IOUtils.toByteArray(jar.getInputStream(entry)));
                 final ClassNode classNode = new ClassNode();
-                classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
+                classReader.accept(classNode, ClassReader.SKIP_FRAMES);
 
                 classes.add(classNode);
             } catch (IOException e) {
