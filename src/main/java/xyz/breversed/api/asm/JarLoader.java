@@ -28,7 +28,7 @@ public class JarLoader {
     public final Map<String, byte[]> files = new HashMap<>();
 
     public void loadJar() {
-        final File input = new File(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[0]);
+        File input = new File(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[0]);
 
         try {
             loadFiles(input);
@@ -39,15 +39,15 @@ public class JarLoader {
     }
 
     public void exportJar() {
-        final File output = new File(BReversed.INSTANCE.config.getPath()  + BReversed.INSTANCE.config.jars[1]);
+        File output = new File(BReversed.INSTANCE.config.getPath()  + BReversed.INSTANCE.config.jars[1]);
 
         try {
-            final JarOutputStream jar = new JarOutputStream(new FileOutputStream(output));
+            JarOutputStream jar = new JarOutputStream(new FileOutputStream(output));
             jar.setMethod(ZipEntry.DEFLATED);
 
             files.keySet().forEach(s -> writeJar(jar, s, files.get(s)));
             classes.forEach(classNode -> {
-                final ClassWriter classWriter = new ClassWriter(0);
+                ClassWriter classWriter = new ClassWriter(0);
                 classNode.accept(classWriter);
                 writeJar(jar, classNode.name + ".class", classWriter.toByteArray());
             });
@@ -67,7 +67,7 @@ public class JarLoader {
     }
 
     private void loadFiles(File input) throws Exception {
-        final ZipInputStream zip = new ZipInputStream(new FileInputStream(input));
+        ZipInputStream zip = new ZipInputStream(new FileInputStream(input));
         ZipEntry zipEntry;
 
         while ((zipEntry = zip.getNextEntry()) != null) {
@@ -77,12 +77,12 @@ public class JarLoader {
     }
 
     private void loadClasses(File input) throws IOException {
-        final JarFile jar = new JarFile(input);
+        JarFile jar = new JarFile(input);
         Stream<JarEntry> entryStream = jar.stream();
         entryStream.filter(entry -> isClass(jar, entry)).forEach(entry -> {
             try {
-                final ClassReader classReader = new ClassReader(IOUtils.toByteArray(jar.getInputStream(entry)));
-                final ClassNode classNode = new ClassNode();
+                ClassReader classReader = new ClassReader(IOUtils.toByteArray(jar.getInputStream(entry)));
+                ClassNode classNode = new ClassNode();
                 classReader.accept(classNode, ClassReader.SKIP_FRAMES);
 
                 classes.add(classNode);

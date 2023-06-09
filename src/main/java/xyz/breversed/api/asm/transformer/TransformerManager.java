@@ -13,7 +13,7 @@ public class TransformerManager {
                 transformer.transform();
                 System.out.println("Success!");
             } catch (Exception e) {
-                System.out.println("Error running " + transformer.toString() + " transformer:");
+                System.out.println("Error running " + transformer + " transformer:");
                 e.printStackTrace();
             }
         });

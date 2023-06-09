@@ -11,7 +11,6 @@ public enum BReversed {
     INSTANCE;
 
     private final String[] authors = new String[] { "Exeos", "$kush" };
-    private final String version = "v1.0.0";
 
     public final Config config = new Config();
     public final TransformerManager transformerManager = new TransformerManager();
@@ -66,11 +65,11 @@ public enum BReversed {
         }
 
         System.out.println();
-        System.out.println("BReversed " + version + " by " + getAuthorsFormatted());
+        System.out.println("BReversed by " + getAuthorsFormatted());
     }
 
     private String getAuthorsFormatted() {
-        final StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < authors.length; i++)
             builder.append(authors[i]).append((i + 1 == authors.length ? "" : (i + 2 >= authors.length ? " and " : ", ")));
 

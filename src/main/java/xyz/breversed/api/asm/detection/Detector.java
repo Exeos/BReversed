@@ -6,10 +6,10 @@ import org.reflections.scanners.SubTypesScanner;
 public class Detector {
 
     public void detect() {
-        final Reflections reflections = new Reflections("xyz.breversed.detectors", new SubTypesScanner(false));
+        Reflections reflections = new Reflections("xyz.breversed.detectors", new SubTypesScanner(false));
         reflections.getSubTypesOf(AbstractDetector.class).forEach(detectorClass -> {
             try {
-                final AbstractDetector detector = detectorClass.newInstance();
+                AbstractDetector detector = detectorClass.newInstance();
                 if (detector.detect()) {
                     System.out.println("Detected " + detector);
                     if (!detector.context.isEmpty()) {

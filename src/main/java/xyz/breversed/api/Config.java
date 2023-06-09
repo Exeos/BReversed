@@ -22,28 +22,26 @@ public class Config {
     public String renamerStr;
 
     public void loadConfig() throws Exception {
-        final FileReader configFile = new FileReader("config.json");
-        final JsonObject configObject = JsonParser.parseReader(configFile).getAsJsonObject();
+        FileReader configFile = new FileReader("config.json");
+        JsonObject configObject = JsonParser.parseReader(configFile).getAsJsonObject();
 
         task = Task.valueOf(configObject.get("task").getAsString());
 
-        // jar to deobf and export to
+        /* jar to target and jar export to */
         {
             path = configObject.get("path").getAsString();
             jars[0] = configObject.get("input").getAsString() + (configObject.get("input").getAsString().endsWith(".jar") ? "" : ".jar");
             jars[1] = configObject.get("output").getAsString() + (configObject.get("output").getAsString().endsWith(".jar") ? "" : ".jar");
         }
 
-        // renamer string
         renamerStr = configObject.get("renamerString").getAsString();
 
-        // Adding transformers from Config
+        /* Adding transformers by their class's simple name */
         {
-            final JsonArray transformers = configObject.get("transformers").getAsJsonArray();
-            final ArrayList<String> actives = new ArrayList<>();
-            actives.addAll(new Gson().fromJson(transformers, ArrayList.class));
+            JsonArray transformers = configObject.get("transformers").getAsJsonArray();
+            ArrayList<String> actives = new ArrayList<>(new Gson().fromJson(transformers, ArrayList.class));
 
-            final Reflections reflections = new Reflections("xyz.breversed.transformers", new SubTypesScanner(false));
+            Reflections reflections = new Reflections("xyz.breversed.transformers", new SubTypesScanner(false));
             reflections.getSubTypesOf(Transformer.class).stream().filter(aClass -> actives.contains(aClass.getSimpleName())).forEach(aClass -> {
                 try {
                     BReversed.INSTANCE.transformerManager.transformers.add(aClass.newInstance());
@@ -59,6 +57,6 @@ public class Config {
     }
 
     public enum Task {
-        DETECT, TRANSFORM;
+        DETECT, TRANSFORM
     }
 }
