@@ -6,14 +6,20 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import xyz.breversed.BReversed;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -23,6 +29,10 @@ public class JarLoader {
 
     public final ArrayList<ClassNode> classes = new ArrayList<>();
     public final HashMap<String, byte[]> files = new HashMap<>();
+
+    private FileTime creationTime;
+    private FileTime lastModifiedTime;
+
 
     public void load() throws IOException {
         JarFile jarIn = new JarFile(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[0]);
@@ -45,6 +55,10 @@ public class JarLoader {
 
             entry = entries.nextElement();
         }
+
+        BasicFileAttributes attributes = Files.getFileAttributeView(Paths.get(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[0]), BasicFileAttributeView.class).readAttributes();
+        creationTime = attributes.creationTime();
+        lastModifiedTime = attributes.lastModifiedTime();
     }
 
     public void export() throws IOException {
@@ -62,10 +76,19 @@ public class JarLoader {
         }
 
         jarOut.finish();
+
+        BasicFileAttributeView attributeView = Files.getFileAttributeView(Paths.get(BReversed.INSTANCE.config.getPath() + BReversed.INSTANCE.config.jars[1]), BasicFileAttributeView.class);
+        attributeView.setTimes(lastModifiedTime, null, creationTime);
     }
 
     private void writeEntry(JarOutputStream outputStream, String name, byte[] bytes) throws IOException {
         JarEntry entry = new JarEntry(name);
+
+        if (creationTime != null)
+            entry.setCreationTime(creationTime);
+        if (lastModifiedTime != null)
+            entry.setLastModifiedTime(lastModifiedTime);
+
         entry.setSize(bytes.length);
 
         outputStream.putNextEntry(entry);
