@@ -3,10 +3,11 @@ package xyz.breversed.api.asm.utils;
 import lombok.experimental.UtilityClass;
 import org.objectweb.asm.tree.ClassNode;
 import xyz.breversed.BReversed;
+import xyz.breversed.api.asm.JarInterface;
 import xyz.breversed.api.asm.JarLoader;
 
 @UtilityClass
-public class RenameUtil {
+public class RenameUtil implements JarInterface {
 
     private int index = 0;
 

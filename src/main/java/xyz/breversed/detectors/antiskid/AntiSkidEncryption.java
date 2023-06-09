@@ -8,7 +8,7 @@ public class AntiSkidEncryption extends AbstractDetector {
     @Override
     protected boolean detect() {
         for (ClassNode classNode : getClasses())
-            if (classNode.superName.equals("java/lang/ClassLoader") && classNode.name.startsWith("club/antiskid"))
+            if (classNode.superName != null && classNode.superName.equals("java/lang/ClassLoader") && classNode.name.startsWith("club/antiskid"))
                 return true;
 
         return false;

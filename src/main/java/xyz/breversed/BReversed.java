@@ -6,6 +6,8 @@ import xyz.breversed.api.asm.detection.Detector;
 import xyz.breversed.api.asm.transformer.TransformerManager;
 import xyz.breversed.api.utils.ConsoleUtil;
 
+import java.io.IOException;
+
 public enum BReversed {
 
     INSTANCE;
@@ -43,7 +45,12 @@ public enum BReversed {
             }
 
             ConsoleUtil.start("Loading jar");
-            JarLoader.loadJar();
+            try {
+                JarLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
             ConsoleUtil.finish();
 
             switch (config.task) {
@@ -57,7 +64,11 @@ public enum BReversed {
                     ConsoleUtil.finish();
 
                     ConsoleUtil.start("Exporting jar");
-                    JarLoader.exportJar();
+                    try {
+                        JarLoader.export();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             ConsoleUtil.finishNoLine();
