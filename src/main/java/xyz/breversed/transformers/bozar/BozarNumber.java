@@ -51,7 +51,7 @@ public class BozarNumber extends Transformer {
                         methodNode.instructions.remove(insnNode.getNext());
                         methodNode.instructions.insert(insnNode, ASMUtil.getLongPush(result));
                         methodNode.instructions.remove(insnNode);
-                    } else /* Shift */{
+                    } else /* Shift */ {
                         if (ASMUtil.getNext(insnNode, 2).getOpcode() == IUSHR) {
                             int result = ASMUtil.getIntValue(insnNode) >>> ASMUtil.getIntValue(insnNode.getNext());
 

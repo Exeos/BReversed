@@ -21,6 +21,7 @@ public class Config {
 
     public String renamerStr;
 
+
     public void loadConfig() throws Exception {
         FileReader configFile = new FileReader("config.json");
         JsonObject configObject = JsonParser.parseReader(configFile).getAsJsonObject();
@@ -41,14 +42,10 @@ public class Config {
             JsonArray transformers = configObject.get("transformers").getAsJsonArray();
             ArrayList<String> actives = new ArrayList<>(new Gson().fromJson(transformers, ArrayList.class));
 
-            Reflections reflections = new Reflections("xyz.breversed.transformers", new SubTypesScanner(false));
-            reflections.getSubTypesOf(Transformer.class).stream().filter(aClass -> actives.contains(aClass.getSimpleName())).forEach(aClass -> {
-                try {
-                    BReversed.INSTANCE.transformerManager.transformers.add(aClass.newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            for (String active : actives) {
+                Class<Transformer> transformer = (Class<Transformer>) Class.forName("xyz.breversed.transformers." + active.replace("/", "."));
+                BReversed.INSTANCE.transformerManager.transformers.add(transformer.newInstance());
+            }
         }
     }
 

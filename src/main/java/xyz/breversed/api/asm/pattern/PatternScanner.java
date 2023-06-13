@@ -81,7 +81,7 @@ public class PatternScanner implements JarInterface {
             if (last == null)
                 break;
 
-            if (first.getOpcode() != pattern[0] || last.getOpcode() != pattern[pattern.length - 1])
+            if ((pattern[0] != -2 && first.getOpcode() != pattern[0]) || (pattern[pattern.length - 1] != -2 && last.getOpcode() != pattern[pattern.length - 1]))
                 continue;
 
             boolean match = true;

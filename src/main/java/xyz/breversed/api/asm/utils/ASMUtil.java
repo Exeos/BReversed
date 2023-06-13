@@ -5,13 +5,24 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 import xyz.breversed.api.asm.JarLoader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @UtilityClass
 public class ASMUtil implements Opcodes {
 
-    public void removeInsnNodes(MethodNode from, AbstractInsnNode[] target) {
-        for (AbstractInsnNode insnNode : target) {
-            from.instructions.remove(insnNode);
+    public void removeInsnNodes(MethodNode from, List<AbstractInsnNode> target) {
+        for (AbstractInsnNode instruction : from.instructions.toArray()) {
+            if (target.contains(instruction)) {
+                target.remove(instruction);
+                from.instructions.remove(instruction);
+            }
         }
+    }
+
+    public void removeInsnNodes(MethodNode from, AbstractInsnNode[] target) {
+        removeInsnNodes(from, new ArrayList<>(Arrays.asList(target)));
     }
 
     public MethodNode getMethod(ClassNode classNode, String name, String desc) {

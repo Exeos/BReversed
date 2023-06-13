@@ -32,7 +32,7 @@ public class BozarLightFlow extends Transformer implements PatternParts {
                         toRemove.add(ASMUtil.getNext(firstAfter, i));
                     }
                     ASMUtil.removeInsnNodes(methodNode, result.pattern);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove.toArray(new AbstractInsnNode[0]));
+                    ASMUtil.removeInsnNodes(methodNode, toRemove);
                 }
 
                 for (InsnResult result : before1(patternScanner, methodNode)) {
@@ -46,7 +46,7 @@ public class BozarLightFlow extends Transformer implements PatternParts {
                         toRemove.add(current);
                     }
                     ASMUtil.removeInsnNodes(methodNode, result.pattern);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove.toArray(new AbstractInsnNode[0]));
+                    ASMUtil.removeInsnNodes(methodNode, toRemove);
                 }
             }
         }
