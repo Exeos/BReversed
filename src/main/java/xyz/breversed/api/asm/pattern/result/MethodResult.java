@@ -10,5 +10,5 @@ import java.util.List;
 public class MethodResult {
 
     public final MethodNode methodNode;
-    public final List<AbstractInsnNode> foundPatterns;
+    public final List<InsnResult> foundPatterns;
 }

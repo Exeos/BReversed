@@ -3,9 +3,16 @@ package xyz.breversed.api.asm.utils;
 import lombok.experimental.UtilityClass;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+import xyz.breversed.api.asm.JarLoader;
 
 @UtilityClass
 public class ASMUtil implements Opcodes {
+
+    public void removeInsnNodes(MethodNode from, AbstractInsnNode[] target) {
+        for (AbstractInsnNode insnNode : target) {
+            from.instructions.remove(insnNode);
+        }
+    }
 
     public MethodNode getMethod(ClassNode classNode, String name, String desc) {
         return classNode.methods.stream().filter(methodNode -> methodNode.name.equals(name) && methodNode.desc.equals(desc)).findFirst().orElse(null);
@@ -24,7 +31,7 @@ public class ASMUtil implements Opcodes {
         AbstractInsnNode next = current;
         for (int i = 0; i < count; i++) {
             if (next.getNext() == null)
-                return next;
+                return null;
             else
                 next = next.getNext();
         }
@@ -40,11 +47,33 @@ public class ASMUtil implements Opcodes {
         AbstractInsnNode prev = current;
         for (int i = 0; i < count; i++) {
             if (prev.getPrevious() == null)
-                return prev;
+                return null;
             else
                 prev = prev.getPrevious();
         }
         return prev;
+    }
+
+    public ClassNode getClass(String name) {
+        return JarLoader.classes.stream().filter(classNode -> classNode.name.equals(name)).findFirst().orElse(null);
+    }
+
+    /*
+     * Look for field in a class by its owner, name and desc
+     */
+    public FieldNode getField(String owner, String name, String desc) {
+        ClassNode classNode = getClass(owner);
+        if (classNode == null)
+            return null;
+        else
+            return getField(classNode, name, desc);
+    }
+
+    /*
+     * Look for field in a class by its name and desc
+     */
+    public FieldNode getField(ClassNode classNode, String name, String desc) {
+        return classNode.fields.stream().filter(fieldNode -> fieldNode.name.equals(name) && fieldNode.desc.equals(desc)).findFirst().orElse(null);
     }
 
     /*

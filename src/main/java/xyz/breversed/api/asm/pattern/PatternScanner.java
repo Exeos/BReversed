@@ -4,6 +4,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.api.asm.pattern.result.ClassResult;
+import xyz.breversed.api.asm.pattern.result.InsnResult;
 import xyz.breversed.api.asm.pattern.result.MethodResult;
 import xyz.breversed.api.asm.utils.ASMUtil;
 import xyz.breversed.api.asm.JarInterface;
@@ -14,8 +15,8 @@ import java.util.List;
 public class PatternScanner implements JarInterface {
 
     /*
-    * Pattern of opcodes to be looked after
-    */
+     * Pattern of opcodes to be looked after
+     */
     private int[] pattern = null;
 
     /**
@@ -55,7 +56,7 @@ public class PatternScanner implements JarInterface {
         List<MethodResult> results = new ArrayList<>();
 
         for (MethodNode methodNode : classNode.methods) {
-            List<AbstractInsnNode> foundPatterns = scanMethod(methodNode);
+            List<InsnResult> foundPatterns = scanMethod(methodNode);
 
             if (!foundPatterns.isEmpty())
                 results.add(new MethodResult(methodNode, foundPatterns));
@@ -68,11 +69,11 @@ public class PatternScanner implements JarInterface {
      * @param methodNode        Method to be scanned
      * @return                  The patterns found
      */
-    public List<AbstractInsnNode> scanMethod(MethodNode methodNode) {
+    public List<InsnResult> scanMethod(MethodNode methodNode) {
         if (pattern == null)
             return null;
 
-        List<AbstractInsnNode> foundPatterns = new ArrayList<>();
+        List<InsnResult> foundPatterns = new ArrayList<>();
 
         for (AbstractInsnNode first : methodNode.instructions) {
             AbstractInsnNode last = ASMUtil.getNext(first, pattern.length - 1);
@@ -85,18 +86,25 @@ public class PatternScanner implements JarInterface {
 
             boolean match = true;
 
+            List<AbstractInsnNode> foundPattern = new ArrayList<>();
+
             /* We start with index 1 because we already know index 0 matches
-            *  We end with length - 2 because we already know length - 1 matches */
+             *  We end with length - 2 because we already know length - 1 matches */
+            foundPattern.add(first);
             for (int i = 1; i <= pattern.length - 2; i++) {
-                /* if pattern ant i is -2 we continue the scan no matter the opcode*/
-                if (pattern[i] != -2 && ASMUtil.getNext(first, i).getOpcode() != pattern[i]) {
+                /* if pattern at i is -2 we continue the scan no matter the opcode*/
+                AbstractInsnNode next = ASMUtil.getNext(first, i);
+                if (pattern[i] != -2 && next.getOpcode() != pattern[i]) {
                     match = false;
                     break;
-                }
+                } else
+                    foundPattern.add(next);
             }
+            foundPattern.add(last);
 
-            if (match)
-                foundPatterns.add(first);
+            if (match) {
+                foundPatterns.add(new InsnResult(foundPattern.toArray(new AbstractInsnNode[0])));
+            }
         }
 
         return foundPatterns;
