@@ -11,9 +11,12 @@ public class TransformerManager {
     public final ArrayList<Transformer> transformers = new ArrayList<>();
 
     public void transform() {
+
         sort();
         for (Transformer transformer : transformers) {
             System.out.println(transformer.getClass().getSimpleName());
+            if (true)
+                continue;
             System.out.println("Running " + transformer + " ");
             try {
                 transformer.transform();
@@ -35,5 +38,9 @@ public class TransformerManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean contains(Class<? extends Transformer>  t) {
+        return transformers.stream().filter(transformer -> transformer.getClass() == t).findFirst().orElse(null) != null;
     }
 }

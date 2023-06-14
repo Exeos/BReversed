@@ -11,6 +11,8 @@ import xyz.breversed.api.asm.transformer.Transformer;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
+import java.util.function.Predicate;
 
 public class Config {
 
@@ -29,22 +31,36 @@ public class Config {
         task = Task.valueOf(configObject.get("task").getAsString());
 
         /* jar to target and jar export to */
-        {
-            path = configObject.get("path").getAsString();
-            jars[0] = configObject.get("input").getAsString() + (configObject.get("input").getAsString().endsWith(".jar") ? "" : ".jar");
-            jars[1] = configObject.get("output").getAsString() + (configObject.get("output").getAsString().endsWith(".jar") ? "" : ".jar");
-        }
+
+        path = configObject.get("path").getAsString();
+        jars[0] = configObject.get("input").getAsString() + (configObject.get("input").getAsString().endsWith(".jar") ? "" : ".jar");
+        jars[1] = configObject.get("output").getAsString() + (configObject.get("output").getAsString().endsWith(".jar") ? "" : ".jar");
+
 
         renamerStr = configObject.get("renamerString").getAsString();
 
-        /* Adding transformers by their class's simple name */
-        {
-            JsonArray transformers = configObject.get("transformers").getAsJsonArray();
-            ArrayList<String> actives = new ArrayList<>(new Gson().fromJson(transformers, ArrayList.class));
+        JsonArray transformers = configObject.get("transformers").getAsJsonArray();
+        ArrayList<String> actives = new ArrayList<>(new Gson().fromJson(transformers, ArrayList.class));
 
-            for (String active : actives) {
-                Class<Transformer> transformer = (Class<Transformer>) Class.forName("xyz.breversed.transformers." + active.replace("/", "."));
-                BReversed.INSTANCE.transformerManager.transformers.add(transformer.newInstance());
+        /* Adding transformers, if input is "package/" add all transformers in that package */
+        for (String active : actives) {
+            String[] split = active.replace(".", "/").split("/");
+            System.out.println(active + "=" + split.length + "=" + split[0]);
+            scanAndAdd(split[0], split.length == 1 ? "" : split[1]);
+        }
+    }
+
+    private void scanAndAdd(String prefix, String className) {
+        Reflections reflections = new Reflections("xyz.breversed.transformers." + prefix, new SubTypesScanner(false));
+        for (Class<? extends Transformer> aClass : reflections.getSubTypesOf(Transformer.class)) {
+            if (className.isEmpty() || className.equals(aClass.getSimpleName())) {
+                try {
+                    /* Dupe check, might remove in future when you have to use the same transformer more than once */
+                    if (!BReversed.INSTANCE.transformerManager.contains(aClass))
+                        BReversed.INSTANCE.transformerManager.transformers.add(aClass.newInstance());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
