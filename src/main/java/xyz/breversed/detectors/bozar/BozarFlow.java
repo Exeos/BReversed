@@ -40,9 +40,9 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
     private boolean lightFlow0(PatternScanner patternScanner, MethodNode methodNode) {
         patternScanner.setPattern(new int[] {
                 GOTO,
-                P_LABEL,
+                LABEL,
                 POP,
-                P_LABEL,
+                LABEL,
                 GETSTATIC,
                 P_ANY,
                 LCMP,
@@ -58,10 +58,10 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
         patternScanner.setPattern(new int[] {
                 GETSTATIC,
                 GOTO,
-                P_LABEL,
+                LABEL,
                 P_ANY,
                 LDIV,
-                P_LABEL,
+                LABEL,
                 L2I,
                 LOOKUPSWITCH
         });

@@ -18,11 +18,12 @@ public class BozarLightFlow extends Transformer implements PatternParts {
 
         for (ClassNode classNode : getClasses()) {
             /* Bozar always adds this field */
-            if (ASMUtil.getField(classNode, String.valueOf((char)5096), "J") == null)
+            FieldNode flowField = ASMUtil.getField(classNode, String.valueOf((char)5096), "J");
+            if (flowField == null)
                 continue;
 
+            classNode.fields.remove(flowField);
             for (MethodNode methodNode : classNode.methods) {
-
                 for (InsnResult result : before0(patternScanner, methodNode)) {
                     /* This is the first insn of the pattern that follows the real insn */
                     AbstractInsnNode firstAfter = ASMUtil.getNext(result.getLast(), 2);
@@ -55,9 +56,9 @@ public class BozarLightFlow extends Transformer implements PatternParts {
     private List<InsnResult> before0(PatternScanner patternScanner, MethodNode methodNode) {
         patternScanner.setPattern(new int[] {
                 GOTO,
-                P_LABEL,
+                LABEL,
                 POP,
-                P_LABEL,
+                LABEL,
                 GETSTATIC,
                 P_ANY,
                 LCMP,
@@ -73,13 +74,13 @@ public class BozarLightFlow extends Transformer implements PatternParts {
         patternScanner.setPattern(new int[] {
                 GETSTATIC,
                 GOTO,
-                P_LABEL,
+                LABEL,
                 P_ANY,
                 LDIV,
-                P_LABEL,
+                LABEL,
                 L2I,
                 LOOKUPSWITCH,
-                P_LABEL
+                LABEL
         });
         return patternScanner.scanMethod(methodNode);
     }

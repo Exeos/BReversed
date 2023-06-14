@@ -81,20 +81,21 @@ public class PatternScanner implements JarInterface {
             if (last == null)
                 break;
 
-            if ((pattern[0] != -2 && first.getOpcode() != pattern[0]) || (pattern[pattern.length - 1] != -2 && last.getOpcode() != pattern[pattern.length - 1]))
+            /* Speeding up the process */
+            if (!macht(first, pattern[0]) || !macht(last, pattern[pattern.length - 1]))
                 continue;
 
             boolean match = true;
 
             List<AbstractInsnNode> foundPattern = new ArrayList<>();
 
-            /* We start with index 1 because we already know index 0 matches
-             *  We end with length - 2 because we already know length - 1 matches */
+            /* Start with index 1 because index 0 matches
+             *  End with length - 2 because length - 1 matches */
             foundPattern.add(first);
             for (int i = 1; i <= pattern.length - 2; i++) {
-                /* if pattern at i is -2 we continue the scan no matter the opcode */
+                /* if pattern at i is -2 continue the scan no matter the opcode */
                 AbstractInsnNode next = ASMUtil.getNext(first, i);
-                if (pattern[i] != -2 && next.getOpcode() != pattern[i]) {
+                if (!macht(next, pattern[i])) {
                     match = false;
                     break;
                 } else
@@ -112,5 +113,9 @@ public class PatternScanner implements JarInterface {
 
     public void setPattern(int[] pattern) {
         this.pattern = pattern;
+    }
+
+    private boolean macht(AbstractInsnNode toCheck, int part) {
+        return part == -2 || toCheck.getOpcode() == part || toCheck.getType() == part - 300;
     }
 }
