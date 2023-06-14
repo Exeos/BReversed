@@ -129,14 +129,14 @@ public class ASMUtil implements Opcodes {
      * Detect if a long gets pushed onto the stack
      */
     public boolean isLongPush(AbstractInsnNode insnNode) {
-        return insnNode.getOpcode() == ICONST_0 || insnNode.getOpcode() == ICONST_1 || insnNode instanceof LdcInsnNode;
+        return (insnNode instanceof InsnNode && (insnNode.getOpcode() == LCONST_0 || insnNode.getOpcode() == LCONST_1)) || insnNode instanceof LdcInsnNode;
     }
 
     /*
      * Detect if an int gets pushed onto the stack
      */
     public boolean isIntPush(AbstractInsnNode insnNode) {
-        return insnNode instanceof IntInsnNode || insnNode instanceof LdcInsnNode || (insnNode.getOpcode() >= ICONST_M1 && insnNode.getOpcode() <= ICONST_5);
+        return insnNode instanceof IntInsnNode || insnNode instanceof LdcInsnNode || (insnNode instanceof InsnNode && (insnNode.getOpcode() >= ICONST_M1 && insnNode.getOpcode() <= ICONST_5));
     }
 
     public boolean isLongOrIntPush(AbstractInsnNode insnNode) {

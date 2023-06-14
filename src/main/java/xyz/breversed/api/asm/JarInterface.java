@@ -9,7 +9,7 @@ public interface JarInterface {
 
 
     default ArrayList<ClassNode> getClasses() {
-        return JarLoader.classes;
+        return new ArrayList<>(JarLoader.classes);
     }
 
     default HashMap<String, byte[]> getFiles() {

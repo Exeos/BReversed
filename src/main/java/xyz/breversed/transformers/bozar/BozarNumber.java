@@ -13,21 +13,13 @@ public class BozarNumber extends Transformer {
                 if (ASMUtil.isRemoved(insnNode, methodNode))
                     continue;
                 /* removing "\0".length() */
-                if (insnNode instanceof LdcInsnNode) {
-                    LdcInsnNode ldcInsn = (LdcInsnNode) insnNode;
+                if (insnNode instanceof LdcInsnNode ldcInsn && ldcInsn.cst instanceof String value) {
+                    if (!value.replace("\0", "").isEmpty())
+                        continue;
 
-                    if (ldcInsn.cst instanceof String ) {
-                        String value = (String) ldcInsn.cst;
-
-                        if (!value.replace("\0", "").isEmpty()) {
-                            System.out.println("b:" + value);
-                            return;
-                        }
-
-                        methodNode.instructions.remove(insnNode.getNext());
-                        methodNode.instructions.insert(insnNode, ASMUtil.getIntPush(value.length()));
-                        methodNode.instructions.remove(insnNode);
-                    }
+                    methodNode.instructions.remove(insnNode.getNext());
+                    methodNode.instructions.insert(insnNode, ASMUtil.getIntPush(value.length()));
+                    methodNode.instructions.remove(insnNode);
                 }
             }
 
@@ -37,19 +29,16 @@ public class BozarNumber extends Transformer {
                     continue;
                 if (ASMUtil.isLongOrIntPush(insnNode) && ASMUtil.isLongOrIntPush(insnNode.getNext())) {
                     /* XOR */
-                    if (ASMUtil.getNext(insnNode, 2).getOpcode() == IXOR) {
-                        int result = ASMUtil.getIntValue(insnNode) ^ ASMUtil.getIntValue(insnNode.getNext());
-
+                    if (ASMUtil.getNext(insnNode, 2).getOpcode() == IXOR || ASMUtil.getNext(insnNode, 2).getOpcode() == LXOR) {
+                        boolean isIXOR = ASMUtil.getNext(insnNode, 2).getOpcode() == IXOR;
+                        Object realValuePushInsn = (isIXOR ? ASMUtil.getIntPush(ASMUtil.getIntValue(insnNode) ^ ASMUtil.getIntValue(insnNode.getNext())) :
+                                ASMUtil.getLongPush(ASMUtil.getLongValue(insnNode) ^ ASMUtil.getLongValue(insnNode.getNext())));
                         methodNode.instructions.remove(insnNode.getNext());
                         methodNode.instructions.remove(insnNode.getNext());
-                        methodNode.instructions.insert(insnNode, ASMUtil.getIntPush(result));
-                        methodNode.instructions.remove(insnNode);
-                    } else if (ASMUtil.getNext(insnNode, 2).getOpcode() == LXOR) {
-                        long result = ASMUtil.getLongValue(insnNode) ^ ASMUtil.getLongValue(insnNode.getNext());
-
-                        methodNode.instructions.remove(insnNode.getNext());
-                        methodNode.instructions.remove(insnNode.getNext());
-                        methodNode.instructions.insert(insnNode, ASMUtil.getLongPush(result));
+                        if (isIXOR)
+                            methodNode.instructions.insert(insnNode, (AbstractInsnNode) realValuePushInsn);
+                        else
+                            methodNode.instructions.insert(insnNode, (AbstractInsnNode) realValuePushInsn);
                         methodNode.instructions.remove(insnNode);
                     } else /* Shift */ {
                         if (ASMUtil.getNext(insnNode, 2).getOpcode() == IUSHR) {

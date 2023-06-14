@@ -39,12 +39,14 @@ public class JarLoader {
             InputStream stream = jarIn.getInputStream(entry);
             byte[] entryBytes = stream.readAllBytes();
 
-            if (entry.getRealName().endsWith(".class") && isClass(entryBytes)) {
-                ClassReader classReader = new ClassReader(entryBytes);
-                ClassNode classNode = new ClassNode();
+            if (isClass(entryBytes)) {
+                if (entry.getRealName().endsWith(".class")) {
+                    ClassReader classReader = new ClassReader(entryBytes);
+                    ClassNode classNode = new ClassNode();
 
-                classReader.accept(classNode, ClassReader.SKIP_FRAMES);
-                classes.add(classNode);
+                    classReader.accept(classNode, ClassReader.SKIP_FRAMES);
+                    classes.add(classNode);
+                }
             } else {
                 files.put(entry.getRealName(), entryBytes);
             }
@@ -64,7 +66,7 @@ public class JarLoader {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             classNode.accept(classWriter);
 
-            writeEntry(jarOut, classNode.name, classWriter.toByteArray());
+            writeEntry(jarOut, classNode.name + ".class", classWriter.toByteArray());
         }
 
         for (Map.Entry<String, byte[]> e : files.entrySet()) {
@@ -93,6 +95,8 @@ public class JarLoader {
     }
 
     private boolean isClass(byte[] file) {
+        if (file.length < 4)
+            return false;
         return new BigInteger(1, new byte[] { file[0], file[1], file[2], file[3] }).intValue() == -889275714;
     }
 }

@@ -37,14 +37,20 @@ public class BozarString extends Transformer implements PatternParts {
                 while ((current = current.getNext()).getOpcode() != NEW) {
                     toRemove.add(current);
                     
-                    if (current.getOpcode() == BASTORE && overFake) {
-                        int at = ASMUtil.getIntValue(ASMUtil.getPrev(current, 2));
-                        int value = ASMUtil.getIntValue(current.getPrevious());
+                    if (current.getOpcode() == BASTORE) {
+                        if (overFake) {
+                            int at = ASMUtil.getIntValue(ASMUtil.getPrev(current, 2));
+                            int value = ASMUtil.getIntValue(current.getPrevious());
 
-                        strMap.put(at, (byte) value);
+                            strMap.put(at, (byte) value);
+                        }
+                        overFake = true;
                     }
-                    overFake = true;
                 }
+
+                /* Pattern isn't string obf */
+                if (!overFake)
+                    continue;
 
                 /* Remove current and next 3 after */
                 for (int i = 0; i < 4; i++) {

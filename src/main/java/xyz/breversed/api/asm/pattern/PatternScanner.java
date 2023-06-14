@@ -92,7 +92,7 @@ public class PatternScanner implements JarInterface {
              *  We end with length - 2 because we already know length - 1 matches */
             foundPattern.add(first);
             for (int i = 1; i <= pattern.length - 2; i++) {
-                /* if pattern at i is -2 we continue the scan no matter the opcode*/
+                /* if pattern at i is -2 we continue the scan no matter the opcode */
                 AbstractInsnNode next = ASMUtil.getNext(first, i);
                 if (pattern[i] != -2 && next.getOpcode() != pattern[i]) {
                     match = false;
