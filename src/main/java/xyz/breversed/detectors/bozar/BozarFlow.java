@@ -25,12 +25,17 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
             }
 
             for (MethodNode methodNode : classNode.methods) {
-                detected.set(lightFlow0(patternScanner, methodNode) || lightFlow1(patternScanner, methodNode));
-
-                if (detected.get()) {
+                if (lightFlow0(patternScanner, methodNode) || lightFlow1(patternScanner, methodNode)) {
                     addContext("Detected Light flow pattern");
-                    break;
+                    detected.set(true);
                 }
+                if (constantFlow1(patternScanner, methodNode)) {
+                    addContext("Detected constant flow");
+                    detected.set(true);
+                }
+
+                if (detected.get() && context.size() == 3)
+                    break;
             }
         }
 
@@ -51,7 +56,7 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
                 P_ANY,
                 IF_ICMPNE
         });
-        return patternScanner.scanMethod(methodNode) != null;
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 
     private boolean lightFlow1(PatternScanner patternScanner, MethodNode methodNode) {
@@ -65,6 +70,22 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
                 L2I,
                 LOOKUPSWITCH
         });
-        return patternScanner.scanMethod(methodNode) != null;
+        return !patternScanner.scanMethod(methodNode).isEmpty();
+    }
+
+    private boolean constantFlow1(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
+                P_ANY,
+                P_ANY,
+                LCMP,
+                ISTORE,
+                ILOAD,
+                IFNE,
+                LABEL,
+                P_ANY,
+                GOTO,
+                LABEL,
+        });
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 }
