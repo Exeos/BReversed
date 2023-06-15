@@ -19,8 +19,8 @@ Template:
   "renamerString": "BReversed",
 
   "transformers": [
-    "crasher/IMGCrasherRemover"
-    "bozar/"
+    "crasher/IMGCrasherRemover",
+    "bozar/",
     "!BozarLightFlow"
   ]
 }
