@@ -1,9 +1,11 @@
-package xyz.breversed.api.asm.transformer.comparators;
+package xyz.breversed.api.asm.transformer.comparator.impl;
 
 import xyz.breversed.api.asm.transformer.Transformer;
+import xyz.breversed.api.asm.transformer.comparator.CompTarget;
 
 import java.util.Comparator;
 
+@CompTarget(target = "bozar")
 public class BozarComparator implements Comparator<Transformer> {
     @Override
     public int compare(Transformer t1, Transformer t2) {
@@ -14,10 +16,12 @@ public class BozarComparator implements Comparator<Transformer> {
 
     private int getIndex(Transformer transformer) {
         return switch (transformer.getClass().getSimpleName()) {
-            case "BozarNumber" -> 0;
-            case "BozarConstantFlow" -> 1;
-            case "BozarString" -> 2;
-            case "BozarLightFlow" -> 3;
+            case "BozarCrasher" -> 0;
+            case "BozarNumber" -> 1;
+            case "BozarConstantFlow" -> 2;
+            case "BozarString" -> 3;
+            case "BozarHeavyFlow" -> 4;
+            case "BozarLightFlow" -> 5;
             default -> Integer.MAX_VALUE;
         };
     }

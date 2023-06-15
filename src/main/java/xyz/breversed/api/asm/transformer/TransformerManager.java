@@ -2,21 +2,20 @@ package xyz.breversed.api.asm.transformer;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
+import xyz.breversed.api.asm.transformer.comparator.CompTarget;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class TransformerManager {
 
+    public final HashMap<String, ArrayList<Transformer>> transformerMap = new HashMap<>();
     public final ArrayList<Transformer> transformers = new ArrayList<>();
 
     public void transform() {
-
-        sort();
+        sortAndAdd();
         for (Transformer transformer : transformers) {
-            System.out.println(transformer.getClass().getSimpleName());
-            if (true)
-                continue;
             System.out.println("Running " + transformer + " ");
             try {
                 transformer.transform();
@@ -28,19 +27,23 @@ public class TransformerManager {
         }
     }
 
-    private void sort() {
-        Reflections reflections = new Reflections("xyz.breversed.api.asm.transformer.comparators", new SubTypesScanner(false));
+    private void sortAndAdd() {
+        Reflections reflections = new Reflections("xyz.breversed.api.asm.transformer.comparator.impl", new SubTypesScanner(false));
         for (Class<?> aClass : reflections.getSubTypesOf(Object.class)) {
+            if (aClass.getAnnotation(CompTarget.class) == null)
+                continue;
             try {
-                transformers.sort((Comparator<Transformer>) aClass.newInstance());
+                String target = aClass.getAnnotation(CompTarget.class).target();
+                System.out.println(target);
+                transformerMap.get(target).sort((Comparator<Transformer>) aClass.newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 System.out.println("Error sorting transformers");
                 e.printStackTrace();
             }
         }
-    }
 
-    public boolean contains(Class<? extends Transformer>  t) {
-        return transformers.stream().filter(transformer -> transformer.getClass() == t).findFirst().orElse(null) != null;
+        for (String p : transformerMap.keySet()) {
+            transformers.addAll(transformerMap.get(p));
+        }
     }
 }

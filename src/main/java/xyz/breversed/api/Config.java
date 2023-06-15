@@ -6,11 +6,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import xyz.breversed.BReversed;
 import xyz.breversed.api.asm.transformer.Transformer;
+import xyz.breversed.api.asm.transformer.comparator.CompTarget;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.function.Predicate;
 
@@ -42,26 +47,36 @@ public class Config {
         JsonArray transformers = configObject.get("transformers").getAsJsonArray();
         ArrayList<String> actives = new ArrayList<>(new Gson().fromJson(transformers, ArrayList.class));
 
+        /* Scrape all sub packages in xyz.breversed.transformers and add to HashMap<String, ArrayList<Transformer>> */
+        scrape();
         /* Adding transformers, if input is "package/" add all transformers in that package */
         for (String active : actives) {
             String[] split = active.replace(".", "/").split("/");
-            System.out.println(active + "=" + split.length + "=" + split[0]);
             scanAndAdd(split[0], split.length == 1 ? "" : split[1]);
         }
     }
 
-    private void scanAndAdd(String prefix, String className) {
-        Reflections reflections = new Reflections("xyz.breversed.transformers." + prefix, new SubTypesScanner(false));
+    private void scanAndAdd(String subPackage, String className) {
+        Reflections reflections = new Reflections("xyz.breversed.transformers." + subPackage, new SubTypesScanner(false));
         for (Class<? extends Transformer> aClass : reflections.getSubTypesOf(Transformer.class)) {
             if (className.isEmpty() || className.equals(aClass.getSimpleName())) {
                 try {
                     /* Dupe check, might remove in future when you have to use the same transformer more than once */
-                    if (!BReversed.INSTANCE.transformerManager.contains(aClass))
-                        BReversed.INSTANCE.transformerManager.transformers.add(aClass.newInstance());
+                    if (BReversed.INSTANCE.transformerManager.transformerMap.get(subPackage).stream().filter(transformer -> transformer.getClass() == aClass).findFirst().orElse(null) == null)
+                        BReversed.INSTANCE.transformerManager.transformerMap.get(subPackage).add(aClass.newInstance());
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
+        }
+    }
+
+    private void scrape() {
+        Reflections reflections = new Reflections("xyz.breversed.transformers", new SubTypesScanner(false));
+        for (Class<?> aClass : reflections.getSubTypesOf(Transformer.class)) {
+            String[] split = aClass.getPackageName().split("\\.");
+            if (!BReversed.INSTANCE.transformerManager.transformerMap.containsKey(split[split.length - 1]))
+                BReversed.INSTANCE.transformerManager.transformerMap.put(split[split.length - 1], new ArrayList<>());
         }
     }
 
