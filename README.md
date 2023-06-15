@@ -21,6 +21,7 @@ Template:
   "transformers": [
     "crasher/IMGCrasherRemover"
     "bozar/"
+    "!BozarLightFlow"
   ]
 }
 ```
@@ -36,7 +37,9 @@ Explanation:
   
    "renamerString": The new name renamed objects (+ the index)
   
-  "transformers": list of transformers for deobfuscation: last sub package + simpleName or "/", user "packagename/" to add all transformers in that package
+  "transformers": list of transformers for deobfuscation:
+                  use "packagename/TransformerSimpleName" to add singular transformer,
+                  if you only use "packagename/" to add all transformers in that package. You can also user "!TransformerSimpleName" to exclude it.
 ```
 
 https://user-images.githubusercontent.com/59488004/197333146-89ba82b3-da07-47c8-8b26-fd73a2094044.mp4
