@@ -25,6 +25,10 @@ public class ASMUtil implements Opcodes {
         removeInsnNodes(from, new ArrayList<>(Arrays.asList(target)));
     }
 
+    public MethodNode getMethod(ClassNode classNode, MethodInsnNode methodInsnNode) {
+        return getMethod(classNode, methodInsnNode.name, methodInsnNode.desc);
+    }
+
     public MethodNode getMethod(ClassNode classNode, String name, String desc) {
         return classNode.methods.stream().filter(methodNode -> methodNode.name.equals(name) && methodNode.desc.equals(desc)).findFirst().orElse(null);
     }
