@@ -123,15 +123,14 @@ PatternScanner implements JarInterface, PatternParts, Opcodes {
                 if (!match(next, pattern[patternIndex])) {
                     match = false;
                     break;
-                } else {
+                } else
                     foundPattern.add(next);
-                }
+
                 patternIndex++;
             }
 
-            if (match) {
+            if (match)
                 foundPatterns.add(new InsnResult(foundPattern.toArray(new AbstractInsnNode[0])));
-            }
         }
 
         return foundPatterns;
