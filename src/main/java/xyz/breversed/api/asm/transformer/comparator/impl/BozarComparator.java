@@ -20,8 +20,7 @@ public class BozarComparator implements Comparator<Transformer> {
             case "BozarNumber" -> 1;
             case "BozarConstantFlow" -> 2;
             case "BozarString" -> 3;
-            case "BozarHeavyFlow" -> 4;
-            case "BozarLightFlow" -> 5;
+            case "BozarHeavyFlow", "BozarLightFlow" -> 4;
             default -> Integer.MAX_VALUE;
         };
     }
