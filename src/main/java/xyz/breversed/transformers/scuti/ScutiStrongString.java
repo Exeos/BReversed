@@ -64,14 +64,11 @@ public class ScutiStrongString extends Transformer implements PatternParts {
     }
 
     private String decrypt(String methodName, String string, int key) {
-        int n2 = methodName.hashCode();
-        int n3 = key ^ n2;
-        char[] cArray = new char[string.length()];
-        int n4 = 0;
-        while (n4 < string.length()) {
-            cArray[n4] = (char)(string.charAt(n4) ^ n3);
-            ++n4;
+        int methodHash = methodName.hashCode();
+        char[] strArray = new char[string.length()];
+        for (int i = 0; i < string.length(); i++) {
+            strArray[i] = (char)(string.charAt(i) ^ (key ^ methodHash));
         }
-        return new String(cArray);
+        return new String(strArray);
     }
 }

@@ -44,12 +44,10 @@ public class ScutiFastString extends Transformer implements PatternParts {
     }
 
     private String decrypt(String string, int key) {
-        StringBuilder stringBuilder = new StringBuilder();
-        int n = 0;
-        while (n < string.length()) {
-            stringBuilder.append((char)(string.charAt(n) ^ key));
-            ++n;
+        StringBuilder decrypted = new StringBuilder();
+        for (int i = 0; i < string.length(); i++) {
+            decrypted.append((char)(string.charAt(i) ^ key));
         }
-        return stringBuilder.toString();
+        return decrypted.toString();
     }
 }
