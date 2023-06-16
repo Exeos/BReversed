@@ -20,6 +20,7 @@ public class ScutiComparator implements Comparator<Transformer> {
             case "ScutiFlow" -> 1;
             case "ScutiInvokeDynamic" -> 2;
             case "ScutiFastString", "ScutiStrongString" -> 3;
+            case "ScutiClassEncrypt" -> 4;
             default -> Integer.MAX_VALUE;
         };
     }
