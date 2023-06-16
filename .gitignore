@@ -27,6 +27,7 @@ jars/**
 
 # manuel
 /.idea/
+/target/
 *.iml
 *.json
 
