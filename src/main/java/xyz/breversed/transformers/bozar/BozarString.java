@@ -19,15 +19,21 @@ public class BozarString extends Transformer implements PatternParts {
     @Override
     protected void transform() {
         PatternScanner patternScanner = new PatternScanner(new int[] {
-                P_ANY,
+                P_NUMBER,
                 NEWARRAY,
-                ASTORE
+                ASTORE,
+
+                P_SKIPTO,
+
+                NEW,
+                DUP,
+                ALOAD,
+                INVOKESPECIAL
         });
 
         for (ClassNode classNode : getClasses()) {
             for (MethodNode methodNode : classNode.methods) {
                 for (InsnResult result : patternScanner.scanMethod(methodNode)) {
-                    AbstractInsnNode current = result.getLast();
                     List<AbstractInsnNode> toRemove = new ArrayList<>();
 
                     /* key = index in array, value = byte value*/
@@ -37,9 +43,11 @@ public class BozarString extends Transformer implements PatternParts {
                     /* first time index 0 is assigned a random number*/
                     boolean overFake = false;
 
-                    while ((current = current.getNext()).getOpcode() != NEW) {
-                        toRemove.add(current);
 
+                    for (int i = 3; i < result.pattern.length - 4; i++) {
+                        AbstractInsnNode current = result.pattern[i];
+
+                        toRemove.add(current);
                         if (current.getOpcode() == BASTORE) {
                             if (overFake) {
                                 try {
@@ -59,9 +67,9 @@ public class BozarString extends Transformer implements PatternParts {
                     if (!overFake)
                         continue;
 
-                    /* Remove current and next 3 after */
+                    /* Remove current and 3 prev before */
                     for (int i = 0; i < 4; i++) {
-                        toRemove.add(ASMUtil.getNext(current, i));
+                        toRemove.add(ASMUtil.getPrev(result.getLast(), i));
                     }
 
                     /* initializing the byte array with correct size */

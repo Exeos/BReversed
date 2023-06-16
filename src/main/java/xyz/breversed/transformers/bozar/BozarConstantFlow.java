@@ -36,14 +36,14 @@ public class BozarConstantFlow extends Transformer implements PatternParts {
 
     private List<InsnResult> scanBefore(PatternScanner patternScanner, MethodNode methodNode) {
         patternScanner.setPattern(new int[] {
-                P_ANY,
-                P_ANY,
+                P_NUMBER,
+                P_NUMBER,
                 LCMP,
                 ISTORE,
                 ILOAD,
                 IFNE,
                 LABEL,
-                P_ANY,
+                P_NUMBER,
                 GOTO,
                 LABEL,
         });
