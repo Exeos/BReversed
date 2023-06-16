@@ -16,7 +16,7 @@ public class ScutiStrongString extends Transformer implements PatternParts {
     protected void transform() {
         PatternScanner patternScanner = new PatternScanner(new int[] {
                 LDC,
-                LDC
+                P_NUMBER
         });
 
         for (ClassNode classNode : getClasses()) {
@@ -26,8 +26,9 @@ public class ScutiStrongString extends Transformer implements PatternParts {
                 for (InsnResult result : patternScanner.scanMethod(methodNode)) {
                     if (!(((LdcInsnNode) result.getFirst()).cst instanceof String encrypted))
                         continue;
-                    if (!(((LdcInsnNode) result.getLast()).cst instanceof Integer key))
+                    if (!ASMUtil.isIntPush(result.getLast()))
                         continue;
+                    int key = ASMUtil.getIntValue(result.getLast());
 
                     List<AbstractInsnNode> toRemove = new ArrayList<>();
                     AbstractInsnNode current = result.getLast();
