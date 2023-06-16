@@ -13,13 +13,14 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
 
     @Override
     protected boolean detect() {
-        AtomicBoolean detected = new AtomicBoolean(false);
+        boolean detected = false;
         PatternScanner patternScanner = new PatternScanner();
 
         for (ClassNode classNode : getClasses()) {
             for (FieldNode field : classNode.fields) {
-                if (field.desc.equals("J")) {
+                if (field.name.equals(String.valueOf((char)5096)) && field.desc.equals("J")) {
                     addContext("Found flow field");
+                    detected = true;
                     break;
                 }
             }
@@ -27,19 +28,19 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
             for (MethodNode methodNode : classNode.methods) {
                 if (lightFlow0(patternScanner, methodNode) || lightFlow1(patternScanner, methodNode)) {
                     addContext("Detected Light flow pattern");
-                    detected.set(true);
+                    detected = true;
                 }
                 if (constantFlow1(patternScanner, methodNode)) {
                     addContext("Detected constant flow");
-                    detected.set(true);
+                    detected = true;
                 }
 
-                if (detected.get() && context.size() == 3)
+                if (detected && context.size() > 1)
                     break;
             }
         }
 
-        return detected.get();
+        return detected;
     }
 
     private boolean lightFlow0(PatternScanner patternScanner, MethodNode methodNode) {
@@ -49,11 +50,11 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
                 POP,
                 LABEL,
                 GETSTATIC,
-                P_ANY,
+                P_NUMBER,
                 LCMP,
                 DUP,
                 IFEQ,
-                P_ANY,
+                P_NUMBER,
                 IF_ICMPNE
         });
         return !patternScanner.scanMethod(methodNode).isEmpty();
@@ -64,27 +65,28 @@ public class BozarFlow extends AbstractDetector implements PatternParts {
                 GETSTATIC,
                 GOTO,
                 LABEL,
-                P_ANY,
+                P_NUMBER,
                 LDIV,
                 LABEL,
                 L2I,
-                LOOKUPSWITCH
+                LOOKUPSWITCH,
+                LABEL
         });
         return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 
     private boolean constantFlow1(PatternScanner patternScanner, MethodNode methodNode) {
         patternScanner.setPattern(new int[] {
-                P_ANY,
-                P_ANY,
+                P_NUMBER,
+                P_NUMBER,
                 LCMP,
                 ISTORE,
                 ILOAD,
                 IFNE,
                 LABEL,
-                P_ANY,
+                P_NUMBER,
                 GOTO,
-                LABEL,
+                LABEL
         });
         return !patternScanner.scanMethod(methodNode).isEmpty();
     }

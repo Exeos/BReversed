@@ -60,11 +60,11 @@ public class BozarLightFlow extends Transformer implements PatternParts {
                 POP,
                 LABEL,
                 GETSTATIC,
-                P_ANY,
+                P_NUMBER,
                 LCMP,
                 DUP,
                 IFEQ,
-                P_ANY,
+                P_NUMBER,
                 IF_ICMPNE
         });
         return patternScanner.scanMethod(methodNode);
@@ -75,7 +75,7 @@ public class BozarLightFlow extends Transformer implements PatternParts {
                 GETSTATIC,
                 GOTO,
                 LABEL,
-                P_ANY,
+                P_NUMBER,
                 LDIV,
                 LABEL,
                 L2I,
