@@ -58,9 +58,10 @@ public class ScutiStrongString extends Transformer implements PatternParts {
 
                     ((LdcInsnNode) result.getFirst()).cst = decrypt(decryptCall.name, encrypted, key);
                 }
-
-                classNode.methods.remove(decryptMethod);
             }
+
+            if (decryptMethod != null)
+                classNode.methods.remove(decryptMethod);
         }
     }
 

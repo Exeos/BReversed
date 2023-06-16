@@ -17,8 +17,9 @@ public class ScutiComparator implements Comparator<Transformer> {
     private int getIndex(Transformer transformer) {
         return switch (transformer.getClass().getSimpleName()) {
             case "ScutiNumber" -> 0;
-            case "ScutiInvokeDynamic" -> 1;
-            case "ScutiFastString", "ScutiStrongString" -> 2;
+            case "ScutiFlow" -> 1;
+            case "ScutiInvokeDynamic" -> 2;
+            case "ScutiFastString", "ScutiStrongString" -> 3;
             default -> Integer.MAX_VALUE;
         };
     }

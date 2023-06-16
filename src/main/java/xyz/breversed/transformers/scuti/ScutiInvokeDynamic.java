@@ -58,7 +58,18 @@ public class ScutiInvokeDynamic extends Transformer implements PatternParts {
     }
 
     private int getKeyByMethod(MethodNode methodNode) {
-        return ASMUtil.getIntValue(methodNode.instructions.get(12));
+        PatternScanner patternScanner = new PatternScanner(new int[] {
+                INVOKEVIRTUAL,
+                P_NUMBER
+        });
+
+        for (InsnResult result : patternScanner.scanMethod(methodNode)) {
+            if (!ASMUtil.isIntPush(result.getLast()))
+                continue;
+            return ASMUtil.getIntValue(result.getLast());
+        }
+
+        return -1;
     }
 
     private String decrypt(String string, int key) {
