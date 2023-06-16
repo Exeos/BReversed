@@ -34,7 +34,6 @@ public class TransformerManager {
                 continue;
             try {
                 String target = aClass.getAnnotation(CompTarget.class).target();
-                System.out.println(target);
                 transformerMap.get(target).sort((Comparator<Transformer>) aClass.newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 System.out.println("Error sorting transformers");

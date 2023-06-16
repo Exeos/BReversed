@@ -1,5 +1,6 @@
 package xyz.breversed.api.asm.pattern;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -10,9 +11,12 @@ import xyz.breversed.api.asm.utils.ASMUtil;
 import xyz.breversed.api.asm.JarInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class PatternScanner implements JarInterface {
+public class
+
+PatternScanner implements JarInterface, PatternParts, Opcodes {
 
     /*
      * Pattern of opcodes to be looked after
@@ -82,26 +86,48 @@ public class PatternScanner implements JarInterface {
                 break;
 
             /* Speeding up the process */
-            if (!macht(first, pattern[0]) || !macht(last, pattern[pattern.length - 1]))
+            if (!containsSKIP() && (!match(first, pattern[0]) || !match(last, pattern[pattern.length - 1])))
                 continue;
 
             boolean match = true;
+            Integer toSkip = null;
 
             List<AbstractInsnNode> foundPattern = new ArrayList<>();
 
-            /* Start with index 1 because index 0 matches
-             *  End with length - 2 because length - 1 matches */
-            foundPattern.add(first);
-            for (int i = 1; i <= pattern.length - 2; i++) {
-                /* if pattern at i is -2 continue the scan no matter the opcode */
+            int i = 0;
+            int patternIndex = 0;
+            while (patternIndex <= pattern.length - 1) {
                 AbstractInsnNode next = ASMUtil.getNext(first, i);
-                if (!macht(next, pattern[i])) {
+                if (next == null) {
                     match = false;
                     break;
-                } else
+                }
+                /* Handling P_SKIPTO */
+                if (toSkip == null && pattern[patternIndex] == P_SKIPTO) {
+                    toSkip = pattern[patternIndex + 1];
+                    continue;
+                }
+                /* increasing i here because if pattern[patternIndex] == P_SKIPTO "next" should also get added */
+                i++;
+
+                if (toSkip != null) {
+                    if (match(next, toSkip)) {
+                        patternIndex++;
+                        toSkip = null;
+                    } else {
+                        foundPattern.add(next);
+                        continue;
+                    }
+                }
+
+                if (!match(next, pattern[patternIndex])) {
+                    match = false;
+                    break;
+                } else {
                     foundPattern.add(next);
+                }
+                patternIndex++;
             }
-            foundPattern.add(last);
 
             if (match) {
                 foundPatterns.add(new InsnResult(foundPattern.toArray(new AbstractInsnNode[0])));
@@ -115,7 +141,11 @@ public class PatternScanner implements JarInterface {
         this.pattern = pattern;
     }
 
-    private boolean macht(AbstractInsnNode toCheck, int part) {
-        return part == -2 || toCheck.getOpcode() == part || toCheck.getType() == part - 300;
+    private boolean containsSKIP() {
+        return Arrays.asList(Arrays.stream(pattern).boxed().toArray(Integer[]::new)).contains(P_SKIPTO);
+    }
+
+    private boolean match(AbstractInsnNode toCheck, int part) {
+        return part == P_ANY || (part == P_NUMBER && ASMUtil.isLongOrIntPush(toCheck)) || toCheck.getOpcode() == part || toCheck.getType() == part - 300;
     }
 }

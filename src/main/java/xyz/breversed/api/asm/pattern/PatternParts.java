@@ -5,6 +5,8 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 public interface PatternParts {
 
     int P_ANY = -2;
+    int P_SKIPTO = -3;
+    int P_NUMBER = -4;
 
     int INSN = AbstractInsnNode.INSN + 300;
     int INT_INSN = AbstractInsnNode.INT_INSN + 300;
