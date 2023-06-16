@@ -94,25 +94,25 @@ PatternScanner implements JarInterface, PatternParts, Opcodes {
 
             List<AbstractInsnNode> foundPattern = new ArrayList<>();
 
-            int i = 0;
-            int patternIndex = 0;
-            while (patternIndex <= pattern.length - 1) {
-                AbstractInsnNode next = ASMUtil.getNext(first, i);
+            int currentInsn = 0;
+            int currentPattern = 0;
+            while (currentPattern <= pattern.length - 1) {
+                AbstractInsnNode next = ASMUtil.getNext(first, currentInsn);
                 if (next == null) {
                     match = false;
                     break;
                 }
                 /* Handling P_SKIPTO */
-                if (toSkip == null && pattern[patternIndex] == P_SKIPTO) {
-                    toSkip = pattern[patternIndex + 1];
+                if (toSkip == null && pattern[currentPattern] == P_SKIPTO) {
+                    toSkip = pattern[currentPattern + 1];
                     continue;
                 }
                 /* increasing i here because if pattern[patternIndex] == P_SKIPTO "next" should also get added */
-                i++;
+                currentInsn++;
 
                 if (toSkip != null) {
                     if (match(next, toSkip)) {
-                        patternIndex++;
+                        currentPattern++;
                         toSkip = null;
                     } else {
                         foundPattern.add(next);
@@ -120,13 +120,13 @@ PatternScanner implements JarInterface, PatternParts, Opcodes {
                     }
                 }
 
-                if (!match(next, pattern[patternIndex])) {
+                if (!match(next, pattern[currentPattern])) {
                     match = false;
                     break;
                 } else
                     foundPattern.add(next);
 
-                patternIndex++;
+                currentPattern++;
             }
 
             if (match)
