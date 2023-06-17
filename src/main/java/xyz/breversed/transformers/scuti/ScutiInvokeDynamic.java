@@ -17,9 +17,9 @@ public class ScutiInvokeDynamic extends Transformer implements PatternParts {
 
         for (ClassNode classNode : getClasses()) {
             MethodNode stringDecryptMethod = classNode.methods.stream().filter(methodNode -> methodNode.access == 4170 &&
-                                                                                       methodNode.desc.equals("(Ljava/lang/String;)Ljava/lang/String;")).findFirst().orElse(null);
+                    methodNode.desc.equals("(Ljava/lang/String;)Ljava/lang/String;")).findFirst().orElse(null);
             MethodNode callDecryptMethod = classNode.methods.stream().filter(methodNode -> methodNode.access == 4169 &&
-                                                                                       methodNode.desc.equals("(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/invoke/CallSite;")).findFirst().orElse(null);
+                    methodNode.desc.equals("(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/invoke/CallSite;")).findFirst().orElse(null);
 
             if (stringDecryptMethod == null || callDecryptMethod == null)
                 continue;

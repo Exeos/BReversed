@@ -1,42 +1,43 @@
-package xyz.breversed.transformers.scuti;
+package xyz.breversed.detectors.scuti;
 
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import xyz.breversed.api.asm.detection.AbstractDetector;
 import xyz.breversed.api.asm.pattern.PatternParts;
 import xyz.breversed.api.asm.pattern.PatternScanner;
 import xyz.breversed.api.asm.pattern.result.InsnResult;
-import xyz.breversed.api.asm.transformer.Transformer;
 import xyz.breversed.api.asm.utils.ASMUtil;
 
-public class ScutiFastString extends Transformer implements PatternParts {
+public class ScutiFastString extends AbstractDetector implements PatternParts {
 
     @Override
-    protected void transform() {
+    protected boolean detect() {
+        boolean detected = false;
+
         PatternScanner patternScanner = new PatternScanner(new int[] {
                 LDC,
                 INVOKESTATIC
         });
 
         for (ClassNode classNode : getClasses()) {
-            MethodNode decryptMethod = null;
-
             for (MethodNode methodNode : classNode.methods) {
                 for (InsnResult result : patternScanner.scanMethod(methodNode)) {
-                    if (!(((LdcInsnNode) result.getFirst()).cst instanceof String encrypted))
+                    if (!(((LdcInsnNode) result.getFirst()).cst instanceof String))
                         continue;
 
                     MethodInsnNode decryptCall = (MethodInsnNode) result.getLast();
-                    decryptMethod = ASMUtil.getMethod(classNode, decryptCall);
-
-                    int key = getKeyByMethod(decryptMethod);
-
-                    ((LdcInsnNode) result.getFirst()).cst = decrypt(encrypted, key);
-                    methodNode.instructions.remove(decryptCall);
+                    int key = getKeyByMethod(ASMUtil.getMethod(classNode, decryptCall));
+                    if (key != -1) {
+                        addContext("Found string decryption method & key");
+                        detected = true;
+                    }
                 }
             }
-
-            if (decryptMethod != null)
-                classNode.methods.remove(decryptMethod);
         }
+
+        return detected;
     }
 
     private int getKeyByMethod(MethodNode methodNode) {
@@ -52,13 +53,5 @@ public class ScutiFastString extends Transformer implements PatternParts {
         }
 
         return -1;
-    }
-
-    private String decrypt(String string, int key) {
-        StringBuilder decrypted = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            decrypted.append((char)(string.charAt(i) ^ key));
-        }
-        return decrypted.toString();
     }
 }
