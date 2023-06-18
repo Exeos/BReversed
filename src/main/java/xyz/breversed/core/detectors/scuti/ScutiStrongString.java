@@ -1,14 +1,11 @@
 package xyz.breversed.core.detectors.scuti;
 
 import org.objectweb.asm.tree.*;
-import xyz.breversed.api.asm.detection.AbstractDetector;
-import xyz.breversed.api.asm.pattern.PatternParts;
-import xyz.breversed.api.asm.pattern.PatternScanner;
-import xyz.breversed.api.asm.pattern.result.InsnResult;
-import xyz.breversed.api.asm.utils.ASMUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import xyz.breversed.core.api.asm.detection.AbstractDetector;
+import xyz.breversed.core.api.asm.pattern.PatternParts;
+import xyz.breversed.core.api.asm.pattern.PatternScanner;
+import xyz.breversed.core.api.asm.pattern.result.InsnResult;
+import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 public class ScutiStrongString extends AbstractDetector implements PatternParts {
 
@@ -38,6 +35,8 @@ public class ScutiStrongString extends AbstractDetector implements PatternParts 
                      */
                     while (decryptCall == null) {
                         current = current.getNext();
+                        if (current == null)
+                            break;
                         possibility++; // there are probably better ways to do this, but it works for now
 
                         if (current instanceof MethodInsnNode &&
@@ -47,7 +46,7 @@ public class ScutiStrongString extends AbstractDetector implements PatternParts 
                         }
                     }
 
-                    if (possibility > 0 && decryptCall.name != null && key != 0) {
+                    if (decryptCall != null && possibility > 0 && decryptCall.name != null && key != 0) {
                         addContext("Found strong encrypted string, key and decryption method");
                         return true;
                     }

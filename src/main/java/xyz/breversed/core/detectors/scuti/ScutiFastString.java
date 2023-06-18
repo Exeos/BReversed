@@ -4,11 +4,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import xyz.breversed.api.asm.detection.AbstractDetector;
-import xyz.breversed.api.asm.pattern.PatternParts;
-import xyz.breversed.api.asm.pattern.PatternScanner;
-import xyz.breversed.api.asm.pattern.result.InsnResult;
-import xyz.breversed.api.asm.utils.ASMUtil;
+import xyz.breversed.core.api.asm.detection.AbstractDetector;
+import xyz.breversed.core.api.asm.pattern.PatternParts;
+import xyz.breversed.core.api.asm.pattern.PatternScanner;
+import xyz.breversed.core.api.asm.pattern.result.InsnResult;
+import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 public class ScutiFastString extends AbstractDetector implements PatternParts {
 

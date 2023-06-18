@@ -1,5 +1,8 @@
 package xyz.breversed.core;
 
+import lombok.extern.slf4j.XSlf4j;
+import org.reflections.Reflections;
+import org.slf4j.LoggerFactory;
 import xyz.breversed.core.api.Config;
 import xyz.breversed.core.api.asm.JarLoader;
 import xyz.breversed.core.api.asm.detection.Detector;
