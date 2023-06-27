@@ -12,9 +12,9 @@ public class IMGCrasherRemover extends Transformer {
             if (classNode.name.toLowerCase().contains("<html><img src="))
                 RenameUtil.rename(classNode);
         }
-        for (String s : getFiles().keySet()) {
+        for (String s : getResources().keySet()) {
             if (s.toLowerCase().contains("<html><img src="))
-                getFiles().put(RenameUtil.rename(), getFiles().remove(s));
+                getResources().put(RenameUtil.rename(), getResources().remove(s));
         }
     }
 }

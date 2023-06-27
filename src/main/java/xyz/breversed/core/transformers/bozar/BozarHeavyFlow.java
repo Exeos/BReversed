@@ -1,11 +1,11 @@
 package xyz.breversed.core.transformers.bozar;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.*;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
 import xyz.breversed.core.api.asm.transformer.Transformer;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class BozarHeavyFlow extends Transformer implements PatternParts {
 
         for (ClassNode classNode : getClasses()) {
             /* Bozar always adds this field */
-            FieldNode flowField = ASMUtil.getField(classNode, String.valueOf((char)5097), "J");
+            FieldNode flowField = ASMUtils.getField(classNode.name, String.valueOf((char)5097), "J");
             if (flowField == null)
                 continue;
 
@@ -56,7 +56,7 @@ public class BozarHeavyFlow extends Transformer implements PatternParts {
             current = current.getNext(); /* insn after end label */
             int amount = switch (current.getOpcode()) {
                 case LXOR -> 10;
-                case LCMP -> ASMUtil.getNext(current, 6).getOpcode() == IF_ICMPNE ? 6 : 3;
+                case LCMP -> ASMUtils.getNext(current, 6).getOpcode() == IF_ICMPNE ? 6 : 3;
                 case LAND -> 3;
                 default -> 0;
             };
@@ -67,17 +67,17 @@ public class BozarHeavyFlow extends Transformer implements PatternParts {
             }
 
             for (int i = 0; i <= amount; i++) {
-                toRemove.add(ASMUtil.getNext(current, i));
+                toRemove.add(ASMUtils.getNext(current, i));
             }
             /* we need to remove insns after real*/
             if (current.getOpcode() == LAND) {
-                current = ASMUtil.getNext(current, 5); /* first after insn */
+                current = ASMUtils.getNext(current, 5); /* first after insn */
                 for (int i = 0; i <= 6; i++) {
-                    toRemove.add(ASMUtil.getNext(current, i));
+                    toRemove.add(ASMUtils.getNext(current, i));
                 }
             }
-            ASMUtil.removeInsnNodes(methodNode, result.pattern);
-            ASMUtil.removeInsnNodes(methodNode, toRemove);
+            ASMUtils.removeInstructions(result.pattern, methodNode);
+            ASMUtils.removeInstructions(toRemove, methodNode);
         }
     }
 
@@ -86,11 +86,11 @@ public class BozarHeavyFlow extends Transformer implements PatternParts {
             List<AbstractInsnNode> toRemove = new ArrayList<>();
 
             for (int i = 2; i <= 8; i++) {
-                toRemove.add(ASMUtil.getNext(result.getLast(), i));
+                toRemove.add(ASMUtils.getNext(result.getLast(), i));
             }
 
-            ASMUtil.removeInsnNodes(methodNode, result.pattern);
-            ASMUtil.removeInsnNodes(methodNode, toRemove);
+            ASMUtils.removeInstructions(result.pattern, methodNode);
+            ASMUtils.removeInstructions(toRemove, methodNode);
         }
 
         for (InsnResult result : secondLayer1(patternScanner, methodNode)) {
@@ -105,11 +105,11 @@ public class BozarHeavyFlow extends Transformer implements PatternParts {
             }
           //  toRemove.add(current) /* dflt label */;
             for (int i = 0; i <= 2; i++) {
-                toRemove.add(ASMUtil.getNext(current, i));
+                toRemove.add(ASMUtils.getNext(current, i));
             }
 
-            ASMUtil.removeInsnNodes(methodNode, result.pattern);
-            ASMUtil.removeInsnNodes(methodNode, toRemove);
+            ASMUtils.removeInstructions(result.pattern, methodNode);
+            ASMUtils.removeInstructions(toRemove, methodNode);
         }
     }
 

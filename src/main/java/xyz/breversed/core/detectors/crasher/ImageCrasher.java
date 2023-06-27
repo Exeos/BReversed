@@ -11,7 +11,7 @@ public class ImageCrasher extends AbstractDetector {
             if (classNode.name.toLowerCase().contains("<html><img src="))
                 return true;
         }
-        for (String s : getFiles().keySet()) {
+        for (String s : getResources().keySet()) {
             if (s.toLowerCase().contains("<html><img src="))
                 return true;
         }

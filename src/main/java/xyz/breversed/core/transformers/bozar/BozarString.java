@@ -1,14 +1,11 @@
 package xyz.breversed.core.transformers.bozar;
 
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
+import org.objectweb.asm.tree.*;
 import xyz.breversed.core.api.asm.transformer.Transformer;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,8 +48,8 @@ public class BozarString extends Transformer implements PatternParts {
                         if (current.getOpcode() == BASTORE) {
                             if (overFake) {
                                 try {
-                                    int at = ASMUtil.getIntValue(ASMUtil.getPrev(current, 2));
-                                    int value = ASMUtil.getIntValue(current.getPrevious());
+                                    int at = ASMUtils.getIntValue(ASMUtils.getPrev(current, 2));
+                                    int value = ASMUtils.getIntValue(current.getPrevious());
 
                                     strMap.put(at, (byte) value);
                                 } catch (ClassCastException e) {
@@ -69,7 +66,7 @@ public class BozarString extends Transformer implements PatternParts {
 
                     /* Remove current and 3 prev before */
                     for (int i = 0; i < 4; i++) {
-                        toRemove.add(ASMUtil.getPrev(result.getLast(), i));
+                        toRemove.add(ASMUtils.getPrev(result.getLast(), i));
                     }
 
                     /* initializing the byte array with correct size */
@@ -78,8 +75,8 @@ public class BozarString extends Transformer implements PatternParts {
                     strMap.forEach((index, value) -> strBytes[index] = value);
 
                     methodNode.instructions.insert(result.getFirst(), new LdcInsnNode(new String(strBytes)));
-                    ASMUtil.removeInsnNodes(methodNode, result.pattern);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove);
+                    ASMUtils.removeInstructions(result.pattern, methodNode);
+                    ASMUtils.removeInstructions(toRemove, methodNode);
                 }
             }
         }

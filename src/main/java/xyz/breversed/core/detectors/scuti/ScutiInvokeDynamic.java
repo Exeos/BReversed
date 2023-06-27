@@ -3,9 +3,8 @@ package xyz.breversed.core.detectors.scuti;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
 
-public class ScutiInvokeDynamic extends AbstractDetector implements PatternParts {
+public class ScutiInvokeDynamic extends AbstractDetector {
 
     @Override
     protected boolean detect() {

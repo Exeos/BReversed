@@ -8,6 +8,13 @@
     <artifactId>BReversed</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
@@ -72,6 +79,11 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Exeos</groupId>
+            <artifactId>ASMPlus</artifactId>
+            <version>v1.1.0</version>
         </dependency>
     </dependencies>
 </project>

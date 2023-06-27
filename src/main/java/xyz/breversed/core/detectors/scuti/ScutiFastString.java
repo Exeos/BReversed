@@ -1,14 +1,14 @@
 package xyz.breversed.core.detectors.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 public class ScutiFastString extends AbstractDetector implements PatternParts {
 
@@ -28,7 +28,7 @@ public class ScutiFastString extends AbstractDetector implements PatternParts {
                         continue;
 
                     MethodInsnNode decryptCall = (MethodInsnNode) result.getLast();
-                    int key = getKeyByMethod(ASMUtil.getMethod(classNode, decryptCall));
+                    int key = getKeyByMethod(ASMUtils.getMethod(classNode, decryptCall.name, decryptCall.desc));
                     if (key != -1) {
                         addContext("Found string decryption method & key");
                         detected = true;
@@ -47,9 +47,8 @@ public class ScutiFastString extends AbstractDetector implements PatternParts {
         });
 
         for (InsnResult result : patternScanner.scanMethod(methodNode)) {
-            if (!ASMUtil.isIntPush(result.getLast()))
-                continue;
-            return ASMUtil.getIntValue(result.getLast());
+            if (ASMUtils.isIntPush(result.getLast()))
+                return ASMUtils.getIntValue(result.getLast());
         }
 
         return -1;

@@ -1,11 +1,11 @@
 package xyz.breversed.core.transformers.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.*;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
 import xyz.breversed.core.api.asm.transformer.Transformer;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +26,9 @@ public class ScutiStrongString extends Transformer implements PatternParts {
                 for (InsnResult result : patternScanner.scanMethod(methodNode)) {
                     if (!(((LdcInsnNode) result.getFirst()).cst instanceof String encrypted))
                         continue;
-                    if (!ASMUtil.isIntPush(result.getLast()))
+                    if (!ASMUtils.isIntPush(result.getLast()))
                         continue;
-                    int key = ASMUtil.getIntValue(result.getLast());
+                    int key = ASMUtils.getIntValue(result.getLast());
 
                     List<AbstractInsnNode> toRemove = new ArrayList<>();
                     AbstractInsnNode current = result.getLast();
@@ -50,7 +50,7 @@ public class ScutiStrongString extends Transformer implements PatternParts {
                         }
                     }
 
-                    decryptMethod = ASMUtil.getMethod(classNode, decryptCall);
+                    decryptMethod = ASMUtils.getMethod(classNode, decryptCall.name, decryptCall.desc);
 
                     for (AbstractInsnNode abstractInsnNode : toRemove)
                         methodNode.instructions.remove(abstractInsnNode);

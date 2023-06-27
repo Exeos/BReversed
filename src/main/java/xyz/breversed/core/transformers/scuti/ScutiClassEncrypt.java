@@ -1,12 +1,12 @@
 package xyz.breversed.core.transformers.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
 import xyz.breversed.core.api.asm.transformer.Transformer;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +27,16 @@ public class ScutiClassEncrypt extends Transformer implements PatternParts {
             return;
 
         List<String> toRemove = new ArrayList<>();
-        for (String key : new ArrayList<>(getFiles().keySet())) { // iterate through all the files, decrypt them, add the decrypted file
+        for (String key : new ArrayList<>(getResources().keySet())) { // iterate through all the files, decrypt them, add the decrypted file
             String decryptedName = decryptString(key, keys[0]);
             if (decryptedName.contains(".")) continue;
 
-            byte[] decryptedFile = decryptFile(getFiles().get(key), keys[1]);
-            getFiles().put(decryptedName + ".class", decryptedFile);
+            byte[] decryptedFile = decryptFile(getResources().get(key), keys[1]);
+            getResources().put(decryptedName + ".class", decryptedFile);
             toRemove.add(key);
         }
         for (String key : toRemove) // remove the encrypted files
-            getFiles().remove(key);
+            getResources().remove(key);
     }
 
     private String decryptString(String string, int key) {
@@ -68,7 +68,7 @@ public class ScutiClassEncrypt extends Transformer implements PatternParts {
                 IXOR
         });
         for (InsnResult result : patternScanner.scanMethod(decryptMethod))
-            return ASMUtil.getIntValue(result.getFirst());
+            return ASMUtils.getIntValue(result.getFirst());
 
         return -1;
     }
@@ -84,7 +84,7 @@ public class ScutiClassEncrypt extends Transformer implements PatternParts {
                 IXOR
         });
         for (InsnResult result : patternScanner.scanMethod(decryptMethod))
-            return ASMUtil.getIntValue(result.getFirst());
+            return ASMUtils.getIntValue(result.getFirst());
 
         return -1;
     }

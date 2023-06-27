@@ -1,11 +1,11 @@
 package xyz.breversed.core.detectors.bozar;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
 
 public class BozarFlow extends AbstractDetector implements PatternParts {
 

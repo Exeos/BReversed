@@ -1,12 +1,12 @@
 package xyz.breversed.core.detectors.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 public class ScutiClassEncrypt extends AbstractDetector implements PatternParts {
 
@@ -43,7 +43,7 @@ public class ScutiClassEncrypt extends AbstractDetector implements PatternParts 
                 IXOR
         });
         for (InsnResult result : patternScanner.scanMethod(decryptMethod))
-            return ASMUtil.getIntValue(result.getFirst());
+            return ASMUtils.getIntValue(result.getFirst());
 
         return -1;
     }
@@ -59,7 +59,7 @@ public class ScutiClassEncrypt extends AbstractDetector implements PatternParts 
                 IXOR
         });
         for (InsnResult result : patternScanner.scanMethod(decryptMethod))
-            return ASMUtil.getIntValue(result.getFirst());
+            return ASMUtils.getIntValue(result.getFirst());
 
         return -1;
     }

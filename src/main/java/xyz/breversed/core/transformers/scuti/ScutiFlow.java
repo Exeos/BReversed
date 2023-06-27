@@ -1,15 +1,15 @@
 package xyz.breversed.core.transformers.scuti;
 
+import me.exeos.asmplus.JarLoader;
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
+import me.exeos.asmplus.pattern.result.InsnResult;
+import me.exeos.asmplus.utils.ASMUtils;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
-import xyz.breversed.core.api.asm.JarLoader;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
-import xyz.breversed.core.api.asm.pattern.result.InsnResult;
 import xyz.breversed.core.api.asm.transformer.Transformer;
-import xyz.breversed.core.api.asm.utils.ASMUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,20 +35,22 @@ public class ScutiFlow extends Transformer implements PatternParts {
         PatternScanner staticInitializerPattern = getStaticInitializerPattern();
 
         for (ClassNode classNode : getClasses()) {
-            if (classNode.name.startsWith("                          "))
-                JarLoader.classes.remove(classNode);
+            if (classNode.name.startsWith("                          ")) {
+                removeClass(classNode);
+                continue;
+            }
 
             for (MethodNode methodNode : classNode.methods) {
                 if (methodNode.name.equals("<clinit>"))
                     for (InsnResult result : staticInitializerPattern.scanMethod(methodNode))
-                        ASMUtil.removeInsnNodes(methodNode, result.pattern);
+                        ASMUtils.removeInstructions(result.pattern, methodNode);
 
                 for (InsnResult result : flowPattern.scanMethod(methodNode)) {
 
                     // Remove trashy instructions
                     List<AbstractInsnNode> toRemove = new ArrayList<>(Arrays.asList(result.pattern));
                     toRemove.removeIf(node -> node instanceof LabelNode);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove);
+                    ASMUtils.removeInstructions(toRemove, methodNode);
 
                     // Remove try catch blocks
                     methodNode.tryCatchBlocks.removeIf(tryCatchBlockNode -> tryCatchBlockNode.type.startsWith("                          "));
@@ -59,7 +61,7 @@ public class ScutiFlow extends Transformer implements PatternParts {
                     // Remove trashy instructions
                     List<AbstractInsnNode> toRemove = new ArrayList<>(Arrays.asList(result.pattern));
                     toRemove.removeIf(node -> node instanceof LabelNode);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove);
+                    ASMUtils.removeInstructions(toRemove, methodNode);
                 }
 
                 for (InsnResult result : thirdFlowPattern.scanMethod(methodNode)) {
@@ -67,7 +69,7 @@ public class ScutiFlow extends Transformer implements PatternParts {
                     // Remove trashy instructions
                     List<AbstractInsnNode> toRemove = new ArrayList<>(Arrays.asList(result.pattern));
                     toRemove.removeIf(node -> node instanceof LabelNode);
-                    ASMUtil.removeInsnNodes(methodNode, toRemove);
+                    ASMUtils.removeInstructions(toRemove, methodNode);
                 }
 
                 // Remove fields

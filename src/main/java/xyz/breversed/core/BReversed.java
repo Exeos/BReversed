@@ -1,10 +1,8 @@
 package xyz.breversed.core;
 
-import lombok.extern.slf4j.XSlf4j;
-import org.reflections.Reflections;
-import org.slf4j.LoggerFactory;
+import me.exeos.asmplus.JarLoader;
+import me.exeos.asmplus.utils.ASMUtils;
 import xyz.breversed.core.api.Config;
-import xyz.breversed.core.api.asm.JarLoader;
 import xyz.breversed.core.api.asm.detection.Detector;
 import xyz.breversed.core.api.asm.transformer.TransformerManager;
 import xyz.breversed.core.api.utils.ConsoleUtil;
@@ -18,6 +16,7 @@ public enum BReversed {
     private final String[] authors = new String[] { "Exeos", "$kush" };
 
     public final Config config = new Config();
+    public final JarLoader jarLoader = new JarLoader();
     public final TransformerManager transformerManager = new TransformerManager();
     private final Detector detector = new Detector();
 
@@ -49,7 +48,8 @@ public enum BReversed {
 
             ConsoleUtil.start("Loading jar");
             try {
-                JarLoader.load();
+                ASMUtils.setJar(jarLoader);
+                jarLoader.load(config.getPath() + config.jars[0]);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -68,7 +68,7 @@ public enum BReversed {
 
                     ConsoleUtil.start("Exporting jar");
                     try {
-                        JarLoader.export();
+                        jarLoader.export(config.getPath() + config.jars[1]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

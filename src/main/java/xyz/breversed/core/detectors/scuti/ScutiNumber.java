@@ -1,10 +1,10 @@
 package xyz.breversed.core.detectors.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
 
 public class ScutiNumber extends AbstractDetector implements PatternParts {
 

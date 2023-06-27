@@ -1,9 +1,8 @@
 package xyz.breversed.core.detectors.bozar;
 
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
 
-public class BozarString extends AbstractDetector implements PatternParts {
+public class BozarString extends AbstractDetector {
 
     @Override
     protected boolean detect() {

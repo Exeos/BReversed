@@ -1,10 +1,10 @@
 package xyz.breversed.core.detectors.scuti;
 
+import me.exeos.asmplus.pattern.PatternParts;
+import me.exeos.asmplus.pattern.PatternScanner;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import xyz.breversed.core.api.asm.detection.AbstractDetector;
-import xyz.breversed.core.api.asm.pattern.PatternParts;
-import xyz.breversed.core.api.asm.pattern.PatternScanner;
 
 public class ScutiFlow extends AbstractDetector implements PatternParts {
 
@@ -12,27 +12,24 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
     protected boolean detect() {
         boolean detected = false;
 
-        PatternScanner staticInitializerPattern = getStaticInitializerPattern();
-        PatternScanner flowPattern = getFlowPattern();
-        PatternScanner secondFlowPattern = getSecondFlowPattern();
-        PatternScanner thirdFlowPattern = getThirdFlowPattern();
+        PatternScanner patternScanner = new PatternScanner();
 
         for (ClassNode classNode : getClasses()) {
             if (!classNode.name.startsWith("          ")) {
                 for (MethodNode methodNode : classNode.methods) {
-                    if (!staticInitializerPattern.scanMethod(methodNode).isEmpty()) {
+                    if (staticInitializerPattern(patternScanner, methodNode)) {
                         addContext("Scuti static initializer");
                         detected = true;
                     }
-                    if (!flowPattern.scanMethod(methodNode).isEmpty()) {
+                    if (flowPattern(patternScanner, methodNode)) {
                         addContext("Main flow pattern");
                         detected = true;
                     }
-                    if (!secondFlowPattern.scanMethod(methodNode).isEmpty()) {
+                    if (secondFlowPattern(patternScanner, methodNode)) {
                         addContext("Second flow pattern");
                         detected = true;
                     }
-                    if (!thirdFlowPattern.scanMethod(methodNode).isEmpty()) {
+                    if (thirdFlowPattern(patternScanner, methodNode)) {
                         addContext("Third flow pattern");
                         detected = true;
                     }
@@ -46,8 +43,8 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
         return detected;
     }
 
-    private PatternScanner getStaticInitializerPattern() {
-        return new PatternScanner(new int[] {
+    private boolean staticInitializerPattern(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
                 P_NUMBER,
                 P_NUMBER,
                 IXOR,
@@ -57,10 +54,11 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
                 IXOR,
                 PUTSTATIC
         });
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 
-    private PatternScanner getFlowPattern() {
-        return new PatternScanner(new int[] {
+    private boolean flowPattern(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
                 GETSTATIC,
                 GETSTATIC,
                 JUMP_INSN,
@@ -71,10 +69,11 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
                 ATHROW,
                 P_ANY
         });
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 
-    private PatternScanner getSecondFlowPattern() {
-        return new PatternScanner(new int[] {
+    private boolean secondFlowPattern(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
                 GOTO,
                 P_ANY,
                 GOTO,
@@ -85,10 +84,11 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
                 ACONST_NULL,
                 ATHROW
         });
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 
-    private PatternScanner getThirdFlowPattern() {
-        return new PatternScanner(new int[] {
+    private boolean thirdFlowPattern(PatternScanner patternScanner, MethodNode methodNode) {
+        patternScanner.setPattern(new int[] {
                 ATHROW,
                 P_ANY,
                 JUMP_INSN,
@@ -99,5 +99,6 @@ public class ScutiFlow extends AbstractDetector implements PatternParts {
                 ACONST_NULL,
                 ATHROW
         });
+        return !patternScanner.scanMethod(methodNode).isEmpty();
     }
 }
