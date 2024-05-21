@@ -1,4 +1,4 @@
-package xyz.breversed.transformers.other.crack;
+package xyz.breversed.transformers.generic;
 
 import org.objectweb.asm.tree.ClassNode;
 import xyz.breversed.BReversed;
@@ -6,7 +6,7 @@ import xyz.breversed.api.asm.transformer.Transformer;
 
 import java.util.HashMap;
 
-public class DogeRepacker extends Transformer {
+public class ZipEntryRemapper extends Transformer {
 
     @Override
     protected void transform() {
@@ -14,7 +14,7 @@ public class DogeRepacker extends Transformer {
         for (ClassNode classNode : getClasses()) {
             renamed.put(classNode.name, classNode);
         }
-        System.out.println("Repacked " + renamed.size() + " classes");
+        System.out.println("Remapped " + renamed.size() + " classes");
 
         BReversed.INSTANCE.jarLoader.classes = renamed;
     }
