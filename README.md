@@ -1,6 +1,12 @@
 # BReversed
 A java bytecode deobfuscator
 
+**dependencies**
+- you will need to add the src path of these repos:
+- 
+- JLIB: https://github.com/Exeos/jlib
+- ASMPlus: https://github.com/Exeos/asmplus
+
 **Config**
 > Creating the config:
 >  
