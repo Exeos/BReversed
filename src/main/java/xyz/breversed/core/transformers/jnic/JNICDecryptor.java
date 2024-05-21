@@ -12,11 +12,19 @@ import xyz.breversed.core.detectors.jnic.JNICLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class JNICDecryptor extends Transformer {
 
     @Override
     public void transform() {
+        System.out.println("WARNING! THIS TRANSFORMER IS EXPLOITABLE AS IT USES REFLECTIONS, MAKE SURE ALL CLASSES IN dev/jnic/** ARE SAFE TO RUN");
+        System.out.println("Continue? yes/no");
+        String in = new Scanner(System.in).nextLine();
+        if (!in.equals("yes")) {
+            return;
+        }
+
         int foundClassCount = 0;
         for (ClassNode classNode : getClasses()) {
             /* skip if class name doesn't match */
