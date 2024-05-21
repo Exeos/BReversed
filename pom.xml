@@ -80,10 +80,5 @@
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.Exeos</groupId>
-            <artifactId>ASMPlus</artifactId>
-            <version>v1.1.0</version>
-        </dependency>
     </dependencies>
 </project>

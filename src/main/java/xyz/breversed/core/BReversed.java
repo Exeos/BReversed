@@ -69,7 +69,7 @@ public enum BReversed {
                     ConsoleUtil.start("Exporting jar");
                     try {
                         jarLoader.export(config.getPath() + config.jars[1]);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
