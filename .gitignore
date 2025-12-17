@@ -26,8 +26,14 @@ replay_pid*
 jars/**
 
 # manuel
-/.idea/
+.idea/
 /target/
 *.iml
 *.json
 
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
