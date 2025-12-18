@@ -17,7 +17,6 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     implementation(libs.asmplus)
-    implementation(libs.jlib)
     implementation(libs.commons.io)
     implementation(libs.gson)
     implementation(libs.reflections)

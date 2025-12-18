@@ -20,7 +20,7 @@ public class TestDetector extends AbstractDetector {
                 })
                 .endMultiMatch()
                 .matchOpCode(ALOAD)
-                .matchOpCode(ICONST_0)
+                .matchNumber(0)
                 .any(2);
 
         for (ClassNode classNode : getClasses()) {
