@@ -26,8 +26,8 @@ replay_pid*
 jars/**
 
 # manuel
+gradle.properties
 .idea/
-/target/
 *.iml
 *.json
 

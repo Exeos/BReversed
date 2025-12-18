@@ -1,0 +1,3 @@
+org.gradle.configuration-cache=true
+dependencies.asmplus.path=../ASMPlus
+dependencies.jlib.path=../jlib

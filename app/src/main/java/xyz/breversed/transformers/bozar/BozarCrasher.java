@@ -1,9 +1,7 @@
 package xyz.breversed.transformers.bozar;
 
-import me.exeos.asmplus.JarLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import xyz.breversed.BReversed;
 import xyz.breversed.api.asm.transformer.Transformer;
 
 public class BozarCrasher extends Transformer {

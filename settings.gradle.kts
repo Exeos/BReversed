@@ -4,12 +4,12 @@ plugins {
 
 rootProject.name = "BReversed"
 include("app")
-includeBuild("../ASMPlus") {
+includeBuild(providers.gradleProperty("dependencies.asmplus.path")) {
     dependencySubstitution {
         substitute(module("me.exeos:asmplus")).using(project(":asmplus-lib"))
     }
 }
-includeBuild("../jlib") {
+includeBuild(providers.gradleProperty("dependencies.jlib.path")) {
     dependencySubstitution {
         substitute(module("me.exeos:jlib")).using(project(":jlib-lib"))
     }
