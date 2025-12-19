@@ -15,16 +15,16 @@ Clone BReversed and the required dependencies:
 ```bash
 git clone https://github.com/Exeos/BReversed.git
 git clone https://github.com/Exeos/ASMPlus.git
-git clone https://github.com/Exeos/jlib.git
 ```
+
+> **⚠️ Before you continue:** Setup [ASMPlus](https://github.com/Exeos/ASMPlus/) as described in its [README](https://github.com/Exeos/ASMPlus/blob/master/README.md)
 
 Resulting layout:
 
 ```
 /
 ├── BReversed/
-├── ASMPlus/
-└── jlib/
+└── ASMPlus/
 ```
 
 Make a local gradle properties file from the example and update the dependency paths. From the `BReversed` directory run:
@@ -37,7 +37,6 @@ Open `gradle.properties` and set the dependency paths (these are the defaults yo
 
 ```
 dependencies.asmplus.path=../ASMPlus
-dependencies.jlib.path=../jlib
 ```
 
 ### Building the Project
