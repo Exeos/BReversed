@@ -7,6 +7,7 @@ import me.exeos.breversed.transformer.AbstractTransformer;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public class BReversed {
 

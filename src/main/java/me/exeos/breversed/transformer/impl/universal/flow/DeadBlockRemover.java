@@ -1,10 +1,7 @@
-package me.exeos.breversed.transformer.impl.universal;
+package me.exeos.breversed.transformer.impl.universal.flow;
 
 import me.exeos.asmplus.analysis.flow.FlowAnalyzer;
 import me.exeos.asmplus.analysis.flow.block.BasicBlock;
-import me.exeos.asmplus.analysis.flow.block.impl.FallTroughBlock;
-import me.exeos.asmplus.analysis.flow.block.impl.JumpBlock;
-import me.exeos.asmplus.analysis.flow.block.impl.TerminalBlock;
 import me.exeos.breversed.transformer.AbstractTransformer;
 import me.exeos.breversed.transformer.context.MethodContext;
 import org.objectweb.asm.tree.InsnList;
