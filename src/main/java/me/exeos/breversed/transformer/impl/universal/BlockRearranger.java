@@ -5,7 +5,6 @@ import me.exeos.asmplus.analysis.flow.block.BasicBlock;
 import me.exeos.asmplus.analysis.flow.block.impl.FallTroughBlock;
 import me.exeos.asmplus.analysis.flow.block.impl.JumpBlock;
 import me.exeos.asmplus.analysis.flow.block.impl.SwitchBlock;
-import me.exeos.asmplus.analysis.flow.block.impl.TerminalBlock;
 import me.exeos.breversed.transformer.AbstractTransformer;
 import me.exeos.breversed.transformer.context.MethodContext;
 import me.exeos.breversed.util.ListUtil;
@@ -29,7 +28,7 @@ public class BlockRearranger extends AbstractTransformer {
             BasicBlock block = rearranged.get(i);
             if (block instanceof JumpBlock jumpBlock && jumpBlock.falseBranchBlock.isEmpty()) {
                 List<BasicBlock> moveChain = new LinkedList<>();
-                lol(jumpBlock.trueBranchBlock, moveChain);
+                buildMoveChain(jumpBlock.trueBranchBlock, moveChain);
 
                 for (int i1 = moveChain.size() - 1; i1 >= 0; i1--) {
                     ListUtil.move(rearranged, rearranged.indexOf(moveChain.get(i1)), rearranged.indexOf(block) + 1);
@@ -45,7 +44,7 @@ public class BlockRearranger extends AbstractTransformer {
         context.methodNode().instructions = rebuild;
     }
 
-    private void lol(BasicBlock current, List<BasicBlock> moveChain) {
+    private void buildMoveChain(BasicBlock current, List<BasicBlock> moveChain) {
         // true branch block:
         // jump: adden & falsebranch, ende wenn kein falseBranch
         // falltough: adden & ft
@@ -55,10 +54,10 @@ public class BlockRearranger extends AbstractTransformer {
         switch (current) {
             case JumpBlock jumpBlock -> {
                 var falseBlock = jumpBlock.falseBranchBlock;
-                falseBlock.ifPresent(block -> lol(block, moveChain));
+                falseBlock.ifPresent(block -> buildMoveChain(block, moveChain));
             }
             case FallTroughBlock tfb -> {
-                lol(tfb.fallTroughBlock, moveChain);
+                buildMoveChain(tfb.fallTroughBlock, moveChain);
             }
             default -> {}
         }
