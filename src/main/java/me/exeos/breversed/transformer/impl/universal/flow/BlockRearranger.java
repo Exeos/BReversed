@@ -17,8 +17,22 @@ import java.util.Set;
 
 public class BlockRearranger extends AbstractTransformer {
 
+    private final boolean skipMethodsWithTcp;
+
+    public BlockRearranger() {
+        this(false);
+    }
+
+    public BlockRearranger(boolean skipMethodsWithTcp) {
+        this.skipMethodsWithTcp = skipMethodsWithTcp;
+    }
+
     @Override
     public void transform(MethodContext context) {
+        if (skipMethodsWithTcp && !context.methodNode().tryCatchBlocks.isEmpty()) {
+            return;
+        }
+
         List<BasicBlock> basicBlocks = FlowAnalyzer.getBasicBlocks(context.methodNode(), true, true);
         if(basicBlocks.isEmpty()) {
             return;

@@ -12,9 +12,22 @@ import java.util.stream.Collectors;
 
 public class DeadBlockRemover extends AbstractTransformer {
 
+    private final boolean skipMethodsWithTcp;
+
+    public DeadBlockRemover() {
+        this(false);
+    }
+
+    public DeadBlockRemover(boolean skipMethodsWithTcp) {
+        this.skipMethodsWithTcp = skipMethodsWithTcp;
+    }
+
     @Override
     public void transform(MethodContext context) {
         MethodNode methodNode = context.methodNode();
+        if (skipMethodsWithTcp && !methodNode.tryCatchBlocks.isEmpty()) {
+            return;
+        }
 
         List<BasicBlock> blocks = FlowAnalyzer.getBasicBlocks(methodNode, true, true);
         if (blocks.isEmpty()) {
